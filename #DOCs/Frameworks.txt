@@ -1,0 +1,81 @@
+#########################
+### Phalcon Framework ###
+#########################
+DevTools
+Migrations
+UnitTests
+
+
+########################
+### Falkon Framework ###
+########################
+Headers
+Sanitize (POST, GET, COOKIE)
+DB
+Model
+Controller (Access)
+Action (Access)
+
+
+FKN Framework
+- Core
+- BackEnd
+- FrontEnd
+
+
+############
+### CORE ###
+############
+User
+- Type
+    - t0 - Dev
+    - t1 - Admin
+    - t2 - Logged (Find a better name)
+    - t3 - Public
+- Roles[]
+    - r0 - Master
+    - r1 - Manager
+    - r2 - Finance
+    - rN - ...
+
+class Controller
+{
+    statis $ACCESS = eUserType::$PUBLIC;
+    statis $ACCESS = [
+        eUserType::$PUBLIC,
+        eUserType::$LOGGED];
+    statis $ACCESS = [
+        eUserType::$DEV,
+        eUserType::$ADMIN => eUserRole::$MASTER,
+        eUserType::$LOGGED => [
+            eUserRole::$MASTER,
+            eUserRole::$FINANCE,
+        ]
+    ];
+    statis $ACCESS = eUserRole::$FINANCE;
+}
+
+class Controller
+{
+    statis $ACCESS = eUserType::$PUBLIC;
+
+    static $ACCESS_action = eUserType::$PUBLIC;
+    public function action($params);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,78 @@
+version: '3'
+services:
+  php-apache:
+    container_name: php-apache
+    build: ./.docker/php-apache
+    volumes:
+      # Config
+      - ./.docker/php-apache/apache/apache2.conf:/etc/apache2/apache2.conf
+#      - ./.docker/php-apache/apache/envvars:/etc/apache2/envvars //Not working after update
+      - ./.docker/php-apache/apache/magic:/etc/apache2/magic
+      - ./.docker/php-apache/apache/ports.conf:/etc/apache2/ports.conf
+      - ./.docker/php-apache/apache/conf-enabled/:/etc/apache2/conf-enabled/
+      - ./.docker/php-apache/apache/mods-enabled/:/etc/apache2/mods-enabled/
+      - ./.docker/php-apache/apache/sites-enabled/:/etc/apache2/sites-enabled/
+      # Logs (Not Working)
+      ##- ./docker/php-apache/apache/logs/access.log:/var/log/apache2/access.log
+      ##- ./docker/php-apache/apache/logs/error.log:/var/log/apache2/error.log
+      # Working Directory
+      - ./src/:/var/www/html/
+    networks:
+      - backend
+    ports:
+      #- "80:80"   #127.0.0.1
+      #- "8080:80" #127.0.0.1:8080
+      #- "8000:80" #127.0.0.1:8000
+      - "80:80"
+
+#  mysql:
+#    container_name: mysql
+#    build: ./.docker/mysql
+#    #volumes:
+#      # Config
+#      #- ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
+#      # Data
+#      #- ./data/mysql:/var/lib/mysql
+#    ports:
+#      - "3306:3306"
+#    #network_mode: host
+#    networks:
+#      - backend
+#    command: --default-authentication-plugin=mysql_native_password
+#    restart: always
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+    volumes:
+      # Data
+      - ./data/mysql:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    ports:
+      - "8080:80"
+    networks:
+      - backend
+    volumes:
+      # Config
+      - ./.docker/phpmyadmin/uploads.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
+
+networks:
+  backend:
