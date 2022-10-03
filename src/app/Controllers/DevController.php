@@ -2,23 +2,13 @@
 
 namespace App\Controllers;
 
+use Core\Controllers\Controller;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class DevController {
-
-    private ServerRequestInterface $request;
-    private ResponseInterface $response;
-    private array $args;
-
-    public function __construct(ServerRequestInterface $request, ResponseInterface $response, array $args)
-    {
-        $this->request = $request;
-        $this->response = $response;
-        $this->args = $args;
-    }
-
+class DevController extends Controller
+{
     public function index(): ResponseInterface
     {
         $this->response->getBody()->write("<h1>Dev</h1>");
@@ -31,12 +21,25 @@ class DevController {
         $this->response->getBody()->write("<h1>Dev - Install</h1>");
 
         $models = $this->loadModels();
+        var_dump($models);
 
         return $this->response;
     }
 
     private function loadModels(): array
     {
-//        $dirContent = scandir(__DIR__)
+        $models = [];
+        $dirPath = __DIR__.'/../Models/';
+        $dirContent = scandir($dirPath);
+        foreach($dirContent as $dirObject){
+            if(is_file($dirPath.$dirObject) && str_ends_with($dirObject, ".php")){
+                $models[] = [
+                    'name' => substr($dirObject, 0, -4),
+                    'file' => $dirObject,
+                    'path' => $dirPath.$dirObject,
+                ];
+            }
+        }
+        return $models;
     }
 }
