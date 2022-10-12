@@ -4,3 +4,4 @@ data/php-logs
 src/vendor
 src/composer.lock
 src/tests-coverage-html
+.env

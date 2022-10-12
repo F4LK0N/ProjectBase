@@ -12,9 +12,9 @@ services:
       # Working Directory
       - ./src/:/var/www/html/
     environment:
-      - SERVER_LOCATION=$SERVER_LOCATION:-local
-      - SERVER_PROVIDER=$SERVER_PROVIDER:-work
-      - SERVER_ENVIRONMENT=$SERVER_ENVIRONMENT:-dev
+      - SERVER_LOCATION=${SERVER_LOCATION:-local}
+      - SERVER_PROVIDER=${SERVER_PROVIDER:-work}
+      - SERVER_ENVIRONMENT=${SERVER_ENVIRONMENT:-dev}
     networks:
       - backend
     ports:
