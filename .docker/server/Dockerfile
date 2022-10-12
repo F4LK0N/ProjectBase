@@ -1,4 +1,5 @@
 FROM php:8.1-apache
+WORKDIR "/var/www/html"
 
 ########################################################################################################################
 ### DEBIAN SYSTEM ###
@@ -11,6 +12,9 @@ RUN apt-get upgrade -y
 
 RUN apt-get autoremove
 RUN apt-get clean
+
+#FileSystem Permissions
+#chmod -R 0777 vendor
 
 
 
@@ -42,8 +46,6 @@ RUN apt-get clean
 #########################################################################################################################
 #### PHP ##
 #########################################################################################################################
-#COPY php/php.ini /usr/local/etc/php/php.ini
-#
 RUN docker-php-ext-install mysqli \
     && docker-php-ext-install pdo \
     && docker-php-ext-install pdo_mysql
@@ -69,7 +71,7 @@ RUN echo "xdebug.mode=develop,debug,coverage" >>  ${XDEBUG_INI_FILE} \
 ### COMPOSER ##
 ########################################################################################################################
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-#CMD composer install
+RUN composer install
 #CMD composer update
 #CMD composer dumpautoload
 
