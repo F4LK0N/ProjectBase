@@ -1,7 +1,4 @@
-data/apache-logs
-data/mysql
-data/php-logs
+data/*
 src/vendor
 src/composer.lock
-src/tests-coverage-html
 .env
