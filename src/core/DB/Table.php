@@ -4,11 +4,11 @@ namespace Core\DB;
 
 class Table
 {
-    public string $name = "";
-    public string $engine = "";
-    public string $collation = "";
-    public string $comment = "";
-    public array  $fields = [];
+    public string $name      = "";
+    public string $engine    = "InnoDB";
+    public string $collation = "latin1_swedish_ci";
+    public string $comment   = "";
+    public array  $fields    = [];
 
     /**
      * @param string $name
@@ -16,9 +16,12 @@ class Table
     public function __construct(string $name){
         $this->name = $name;
 
-        $this->engine = "InnoDB";
-        $this->collation = "latin1_swedish_ci";
-        $this->fields['id'] = true;
+//        $this->fields['id'] = (new Field("id"))
+//            ->type("INT")
+//            ->attributes("UNSIGNED")
+//            ->null(false)
+//            ->index("PRIMARY")
+//            ->autoIncrement(true);
     }
 
     /**
@@ -63,6 +66,15 @@ class Table
      */
     public function fields(array $fields): Table {
         $this->fields = $fields;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return Table $this
+     */
+    public function fieldDelete(string $name): Table {
+        unset($this->fields[$name]);
         return $this;
     }
 
