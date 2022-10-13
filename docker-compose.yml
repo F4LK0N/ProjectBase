@@ -24,6 +24,7 @@ services:
       - ./src/:/var/www/html/
       # Logs
       - ./data/logs/apache/:/var/log/apache2/
+      - ./data/logs/php/:/var/log/php/
     networks:
       - backend
     ports:
