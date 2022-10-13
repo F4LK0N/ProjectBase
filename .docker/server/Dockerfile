@@ -40,10 +40,12 @@ ADD ./os/scripts/* /usr/local/bin/
 #   sites-available/
 #   sites-enabled/
 
-#RUN rm /etc/apache2/apache2.conf
-#RUN rm /etc/apache2/ports.conf
-#RUN rm /etc/apache2/conf-enabled/charset.conf
-#ADD ./apache/apache2.conf /etc/apache2/apache2.conf
+RUN rm /etc/apache2/apache2.conf
+RUN rm /etc/apache2/ports.conf
+ADD ./apache/apache2.conf /etc/apache2/apache2.conf
+
+RUN rm /etc/apache2/sites-enabled/*
+ADD ./apache/sites-enabled/main.conf /etc/apache2/sites-enabled/main.conf
 
 ########################################
 ### LOGS ###
