@@ -20,8 +20,7 @@ services:
       - MYSQL_DATABASE
       - MYSQL_DATABASE_TEST
     volumes:
-      #      # Config
-      #      - ./.docker/server/apache/:/etc/apache2/
+      # Config
       #      - ./.docker/server/php/php.ini:/usr/local/etc/php/php.ini
       # Working Directory
       - ./src/:/var/www/html/
@@ -31,6 +30,7 @@ services:
       - backend
     ports:
       - "80:80"
+      - "443:443"
 
 #  mysql:
 #    container_name: ${PROJECT_NAME}-mysql

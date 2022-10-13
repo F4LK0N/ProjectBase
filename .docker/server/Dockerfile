@@ -18,7 +18,6 @@ RUN apt-get clean
 ########################################
 ### SCRIPTS ###
 ########################################
-#RUN mkdir /scripts/
 ADD ./os/scripts/* /usr/local/bin/
 
 
@@ -30,7 +29,7 @@ ADD ./os/scripts/* /usr/local/bin/
 ### CONFIGURATION FILES ###
 ########################################
 # /etc/apache2/
-#   apache.conf
+#   apache2.conf
 #   envvars
 #   magic
 #   ports.conf
@@ -39,10 +38,12 @@ ADD ./os/scripts/* /usr/local/bin/
 #   mods-available/
 #   mods-enabled/
 #   sites-available/
-#   Sites-enabled/
+#   sites-enabled/
 
-RUN rm -r /etc/apache2/*
-ADD ./apache/* /etc/apache2/
+#RUN rm /etc/apache2/apache2.conf
+#RUN rm /etc/apache2/ports.conf
+#RUN rm /etc/apache2/conf-enabled/charset.conf
+#ADD ./apache/apache2.conf /etc/apache2/apache2.conf
 
 ########################################
 ### LOGS ###
