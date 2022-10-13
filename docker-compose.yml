@@ -20,8 +20,6 @@ services:
       - MYSQL_DATABASE
       - MYSQL_DATABASE_TEST
     volumes:
-      # Config
-      #      - ./.docker/server/php/php.ini:/usr/local/etc/php/php.ini
       # Working Directory
       - ./src/:/var/www/html/
       # Logs
