@@ -4,8 +4,8 @@
 ### COMPOSER ###
 ########################################################################################################################
 cd /var/www/html/
-composer install --ignore-platform-reqs
-composer update --ignore-platform-reqs
+composer install
+composer update
 composer dumpautoload
 
 
@@ -13,7 +13,7 @@ composer dumpautoload
 ########################################################################################################################
 ### FILESYSTEM PERMISSIONS ###
 ########################################################################################################################
-chmod -R 0777 /var/www/html/
+chmod -R 777 /var/www/html
 
 
 
