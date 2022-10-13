@@ -1,27 +1,39 @@
-version: '3'
+version: '3.9'
 services:
   server:
-    container_name: server
+    container_name: ${PROJECT_NAME}___server
+    image: ${PROJECT_NAME}/server
     build: ./.docker/server
+    environment:
+      # Verify the .env file.
+      - PROJECT_NAME=${PROJECT_NAME:?!!! ERROR !!! .env file not found at the root directory!}
+      # Define the environment variables.
+      - PROJECT_NAME
+      - PROJECT_LABEL
+      - SERVER_LOCATION
+      - SERVER_PROVIDER
+      - SERVER_ENVIRONMENT
+      - MYSQL_HOST
+      - MYSQL_PORT
+      - MYSQL_USER=${MYSQL_APP_USER}
+      - MYSQL_PASS=${MYSQL_APP_PASS}
+      - MYSQL_DATABASE
+      - MYSQL_DATABASE_TEST
     volumes:
-      # Config
-      - ./.docker/server/apache/:/etc/apache2/
-      - ./.docker/server/php/php.ini:/usr/local/etc/php/php.ini
-      # Logs
-      - ./data/apache-logs/:/var/log/apache2/
+      #      # Config
+      #      - ./.docker/server/apache/:/etc/apache2/
+      #      - ./.docker/server/php/php.ini:/usr/local/etc/php/php.ini
       # Working Directory
       - ./src/:/var/www/html/
-    environment:
-      - SERVER_LOCATION=${SERVER_LOCATION:-local}
-      - SERVER_PROVIDER=${SERVER_PROVIDER:-work}
-      - SERVER_ENVIRONMENT=${SERVER_ENVIRONMENT:-dev}
+      # Logs
+      - ./data/logs/apache/:/var/log/apache2/
     networks:
       - backend
     ports:
       - "80:80"
 
 #  mysql:
-#    container_name: mysql
+#    container_name: ${PROJECT_NAME}-mysql
 #    image: mysql:8
 #    command: --default-authentication-plugin=mysql_native_password
 #    restart: always
@@ -38,7 +50,7 @@ services:
 #      - ./data/mysql:/var/lib/mysql
 #
 #  phpmyadmin:
-#    container_name: phpmyadmin
+#    container_name: ${PROJECT_NAME}-phpmyadmin
 #    image: phpmyadmin/phpmyadmin
 #    environment:
 #      - PMA_ARBITRARY=1
@@ -55,3 +67,4 @@ services:
 
 networks:
   backend:
+    name: ${PROJECT_NAME}___backend
