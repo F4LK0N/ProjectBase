@@ -34,19 +34,42 @@ final class HttpHeaderTest extends TestCase
         );
     }
 
-//    public function testHeaders(): void
-//    {
-//        $this->assertNull(
-//            HttpHeader::getHeader("Header-Name")
-//        );
-//
-//        HttpHeader::setHeader(" Header-Name:  Value Test ");
-//        $this->assertEquals(
-//            "Value Test",
-//            HttpHeader::getHeader("Header-Name")
-//        );
-//
-//    }
+    /**
+     * @depends testSetInvalidHeader
+     */
+    public function testSetGetHeader(): void
+    {
+        $this->assertNull(
+            HttpHeader::getHeader("Header-Name")
+        );
+
+        HttpHeader::setHeader("Header-Name:Value Test");
+        $this->assertEquals(
+            "Value Test",
+            HttpHeader::getHeader("Header-Name")
+        );
+
+        HttpHeader::setHeader("  Header-Name  :  Value Test 2  ");
+        $this->assertEquals(
+            "Value Test 2",
+            HttpHeader::getHeader("Header-Name")
+        );
+
+        $headers = HttpHeader::getHeaders();
+        $this->assertFalse(isset($headers['Header-Name-Not-Set']));
+        $this->assertTrue(isset($headers['Header-Name']));
+        $this->assertEquals(
+            "Value Test 2",
+            $headers['Header-Name']
+        );
+
+        HttpHeader::clearHeaders();
+        $headers = HttpHeader::getHeaders();
+        $this->assertEquals(
+            0,
+            count($headers)
+        );
+    }
 
 
 //    public function testContentType(): void

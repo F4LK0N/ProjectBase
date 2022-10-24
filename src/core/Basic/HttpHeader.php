@@ -28,7 +28,7 @@ class HttpHeader
             return false;
         }
 
-        $headerParts = explode(": ", $value, 2);
+        $headerParts = explode(":", $value, 2);
         $headerParts[0] = trim($headerParts[0]);
         $headerParts[1] = trim($headerParts[1]);
 
@@ -49,6 +49,10 @@ class HttpHeader
     static public function getHeaders(): array
     {
         return self::$headers;
+    }
+    static public function clearHeaders(): void
+    {
+        self::$headers = [];
     }
 
     static private function runContentType(): void
