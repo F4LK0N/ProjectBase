@@ -1,25 +1,57 @@
 #!/bin/bash
-
-########################################################################################################################
-### COMPOSER ###
-########################################################################################################################
+echo "####################################################################################################"
+echo "### OS - CMD Entrypoint ###"
+echo "####################################################################################################"
+echo "### Working Directory ###"
+echo "/var/www/html/"
 cd /var/www/html/
-composer install
-composer update
+echo
+
+
+
+echo "##################################################"
+echo "### COMPOSER ###"
+echo "##################################################"
+#TODO: Don't run install and update if the vendor folder already exists.
+echo "### INSTALL ###"
+if [ -d "vendor" ]
+then
+    echo "Skipping..."
+else
+    echo "Installing..."
+    composer install
+fi
+
+echo "### UPDATE ###"
+if [ -d "vendor" ]
+then
+    echo "Skipping..."
+else
+    echo "Updating..."
+    composer update
+fi
+
+echo "### AUTOLOAD ###"
 composer dumpautoload
+echo
 
 
 
-########################################################################################################################
-### FILESYSTEM PERMISSIONS ###
-########################################################################################################################
+echo "##################################################"
+echo "### FILESYSTEM PERMISSIONS ###"
+echo "##################################################"
+echo "### CHMOD ###"
 chmod -R 777 /var/www/html
+echo
 
 
 
-########################################################################################################################
-### APACHE2-FOREGROUND ###
-########################################################################################################################
+
+
+echo "####################################################################################################"
+echo "### APACHE2-FOREGROUND ###"
+echo "####################################################################################################"
+# The code below is just a copy of the original entrypoint script.
 set -e
 
 # Note: we don't just use "apache2ctl" here because it itself is just a shell-script wrapper around apache2 which provides extra functionality like "apache2ctl start" for launching apache2 in the background.
@@ -59,3 +91,8 @@ for e in "${!APACHE_@}"; do
 done
 
 exec apache2 -DFOREGROUND "$@"
+
+echo
+echo "####################################################################################################"
+echo "System Running"
+echo "####################################################################################################"
