@@ -13,12 +13,12 @@ class HttpHeaders
     public const CONTENT_TYPE_HTML = 1;
     public const CONTENT_TYPE_JSON = 2;
 
-    static private int $contentType = 0;
+    static private int $contentType = 1;
     static private array $headers = [];
 
 
 
-    static public function run()
+    static public function run(): void
     {
         if(self::canRun()){
             self::runContentType();
@@ -105,7 +105,7 @@ class HttpHeaders
     {
         return self::$contentType;
     }
-    static private function getContentTypeHeader(): string
+    static private function createContentTypeHeaderValue(): string
     {
 
     }

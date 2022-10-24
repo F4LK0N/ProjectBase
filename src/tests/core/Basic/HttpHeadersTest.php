@@ -69,14 +69,36 @@ final class HttpHeadersTest extends TestCase
     /**
      * @depends testSetGetHeader
      */
-    public function testContentType(): void
+    public function testSetGetContentType(): void
     {
+        $this->assertEquals(
+            HttpHeaders::CONTENT_TYPE_HTML,
+            HttpHeaders::getContentType()
+        );
+
+        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_JSON);
+        $this->assertEquals(
+            HttpHeaders::CONTENT_TYPE_JSON,
+            HttpHeaders::getContentType()
+        );
+
         HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_HTML);
         $this->assertEquals(
             HttpHeaders::CONTENT_TYPE_HTML,
             HttpHeaders::getContentType()
         );
 
+        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_JSON);
+        $this->assertEquals(
+            HttpHeaders::CONTENT_TYPE_JSON,
+            HttpHeaders::getContentType()
+        );
+
+        HttpHeaders::setContentType(3);
+        $this->assertEquals(
+            HttpHeaders::CONTENT_TYPE_HTML,
+            HttpHeaders::getContentType()
+        );
     }
 
 }
