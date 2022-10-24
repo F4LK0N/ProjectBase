@@ -3,18 +3,22 @@
 namespace Core\Basic;
 
 /**
- * $_SERVER['HTTP_HEADERS_RUN']=false;
+ * $_SERVER['HTTP_HEADERS_RUN'] = false;
  * Stops the default behavior of set and send default headers.
  *
+ * $_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS'] = false;
+ * Stops the default behavior of sending the http headers when calls run().
  *
+ * $_SERVER['HTTP_HEADER_CONTENT_TYPE']
+ * Sets the default value when run() calls setContentType().
  */
 class HttpHeaders
 {
     public const CONTENT_TYPE_HTML = 1;
     public const CONTENT_TYPE_JSON = 2;
 
-    static private int $contentType = 1;
-    static private array $headers = [];
+    static private int   $contentType = 0;
+    static private array $headers     = [];
 
 
 
@@ -83,17 +87,27 @@ class HttpHeaders
     }
     static public function setContentType(int $value=0): void
     {
+        $newValue = 0;
+
         //Direct Value
         if($value!==0) {
-            self::$contentType = $value;
+            $newValue = $value;
         }
-        //Pre Script Variable
-        else if(isset($HTTP_HEADER_CONTENT_TYPE)) {
-            self::$contentType = $HTTP_HEADER_CONTENT_TYPE;
+        else if(self::$contentType===0)
+        {
+            //Pre Script Variable
+            if(isset($_SERVER['HTTP_HEADER_CONTENT_TYPE'])) {
+                $newValue = $_SERVER['HTTP_HEADER_CONTENT_TYPE'];
+            }
+            //Environment File Variable
+            else if(isset($_SERVER['PROJECT_CONTENT_TYPE'])){
+                $newValue = $_SERVER['PROJECT_CONTENT_TYPE'];
+            }
         }
-        //Environment File
-        else if(isset($_SERVER['PROJECT_CONTENT_TYPE'])){
-            self::$contentType = $_SERVER['PROJECT_CONTENT_TYPE'];
+
+        //Set New Value
+        if($newValue===self::CONTENT_TYPE_HTML || $newValue===self::CONTENT_TYPE_JSON){
+            self::$contentType = $newValue;
         }
 
         //Default Value
@@ -117,20 +131,6 @@ class HttpHeaders
         $header.=" charset=utf-8";
 
         return $header;
-    }
-    static public function ContentType ($type, $returnHeaderString=false)
-    {
-        //Property
-        $header = "Content-Type: ";
-        //Type
-        $header .= ($type===self::CONTENT_TYPE_HTML)?"text/html;":"application/json;";
-        //Encoding
-        $header.=" charset=utf-8";
-
-        //SUCCESS
-        if($returnHeaderString===true)
-            return $header;
-        header($header);
     }
 
     static private function runCORS()

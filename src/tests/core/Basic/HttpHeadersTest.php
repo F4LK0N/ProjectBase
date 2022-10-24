@@ -119,17 +119,19 @@ final class HttpHeadersTest extends TestCase
     /**
      * @depends testSetGetHeader
      */
-    public function testSetGetContentTypeDefault(): void
+    public function testContentTypeNotSet(): void
     {
-        //### NOT SET ###
         $this->assertEquals(
             0,
             HttpHeaders::getContentType()
         );
+    }
 
-
-
-        //### DEFAULT ###
+    /**
+     * @depends testContentTypeNotSet
+     */
+    public function testContentTypeDefault(): void
+    {
         HttpHeaders::setContentType();
         $this->assertEquals(
             HttpHeaders::CONTENT_TYPE_HTML,
@@ -138,31 +140,41 @@ final class HttpHeadersTest extends TestCase
     }
 
     /**
-     * @depends testSetGetContentTypeDefault
+     * @depends testContentTypeDefault
      */
-    public function testSetGetContentTypeDirectValue(): void
+    public function testContentTypeInvalid(): void
     {
-        //### DEFAULT ###
         HttpHeaders::setContentType(99999);
         $this->assertEquals(
             HttpHeaders::CONTENT_TYPE_HTML,
             HttpHeaders::getContentType()
         );
+    }
 
-
-
-        //### DIRECT VALUE ###
-        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_HTML);
+    /**
+     * @depends testContentTypeInvalid
+     * @dataProvider contentTypeProvider
+     */
+    public function testContentTypeDirectValue($contentType): void
+    {
+        HttpHeaders::setContentType($contentType);
         HttpHeaders::setContentType(99999);
         $this->assertEquals(
-            HttpHeaders::CONTENT_TYPE_HTML,
+            $contentType,
             HttpHeaders::getContentType()
         );
+    }
 
-        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_JSON);
-        HttpHeaders::setContentType(99999);
+    /**
+     * @depends testContentTypeDirectValue
+     * @dataProvider contentTypeProvider
+     */
+    public function testContentTypePreScriptValue($contentType): void
+    {
+        $_SERVER['HTTP_HEADER_CONTENT_TYPE'] = $contentType;
+        HttpHeaders::setContentType();
         $this->assertEquals(
-            HttpHeaders::CONTENT_TYPE_JSON,
+            $contentType,
             HttpHeaders::getContentType()
         );
     }
@@ -185,4 +197,13 @@ final class HttpHeadersTest extends TestCase
         );
     }
 
+
+
+    public function contentTypeProvider(): array
+    {
+        return [
+            [HttpHeaders::CONTENT_TYPE_HTML],
+            [HttpHeaders::CONTENT_TYPE_JSON],
+        ];
+    }
 }
