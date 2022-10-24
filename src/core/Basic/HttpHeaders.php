@@ -2,7 +2,13 @@
 
 namespace Core\Basic;
 
-class HttpHeader
+/**
+ * $_SERVER['HTTP_HEADERS_RUN']=false;
+ * Stops the default behavior of set and send default headers.
+ *
+ *
+ */
+class HttpHeaders
 {
     public const CONTENT_TYPE_HTML = 1;
     public const CONTENT_TYPE_JSON = 2;
@@ -14,9 +20,20 @@ class HttpHeader
 
     static public function run()
     {
-        self::runContentType();
-//        self::runCORS();
-//        self::runOptions();
+        if(self::canRun()){
+            self::runContentType();
+            self::runCORS();
+            //self::sendHeaders();
+            self::runOptions();
+        }
+    }
+    static private function canRun(): bool
+    {
+        if(isset($_SERVER['HTTP_HEADERS_RUN']) && $_SERVER['HTTP_HEADERS_RUN']===false){
+            return false;
+        }
+
+        return true;
     }
 
     static public function setHeader(string $value): bool
@@ -84,13 +101,13 @@ class HttpHeader
             self::$contentType = self::CONTENT_TYPE_HTML;
         }
     }
-    static private function getContentTypeHeader(): string
-    {
-
-    }
     static public function getContentType(): int
     {
         return self::$contentType;
+    }
+    static private function getContentTypeHeader(): string
+    {
+
     }
     static public function ContentType ($type, $returnHeaderString=false)
     {
@@ -125,7 +142,5 @@ class HttpHeader
             exit(0);
     }
 
-
-
 }
-//HttpHeader::run();
+HttpHeaders::run();
