@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   server:
-    container_name: ${PROJECT_NAME}___server
+    container_name: ${PROJECT_NAME}-server
     image: ${PROJECT_NAME}/server
     build: ./.docker/server
     environment:
@@ -22,7 +22,10 @@ services:
     volumes:
       # Working Directory
       - ./src/:/var/www/html/
+      # DotEnv File
+      #TODO: Verify the necessity of map the .env file to inside the src folder.
       # Logs
+      #TODO: Map Docker host logs.
       - ./data/logs/apache/:/var/log/apache2/
       - ./data/logs/php/:/var/log/php/
     networks:
@@ -66,4 +69,4 @@ services:
 
 networks:
   backend:
-    name: ${PROJECT_NAME}___backend
+    name: ${PROJECT_NAME}-backend
