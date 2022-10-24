@@ -100,14 +100,23 @@ class HttpHeaders
         if(self::$contentType!==self::CONTENT_TYPE_HTML && self::$contentType!==self::CONTENT_TYPE_JSON){
             self::$contentType = self::CONTENT_TYPE_HTML;
         }
+
+        self::setHeader(self::createContentTypeHeader());
     }
     static public function getContentType(): int
     {
         return self::$contentType;
     }
-    static private function createContentTypeHeaderValue(): string
+    static private function createContentTypeHeader(): string
     {
+        //Property
+        $header = "Content-Type: ";
+        //Type
+        $header .= (self::$contentType===self::CONTENT_TYPE_JSON)?"application/json;":"text/html;";
+        //Encoding
+        $header.=" charset=utf-8";
 
+        return $header;
     }
     static public function ContentType ($type, $returnHeaderString=false)
     {

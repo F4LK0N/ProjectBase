@@ -101,4 +101,22 @@ final class HttpHeadersTest extends TestCase
         );
     }
 
+    /**
+     * @depends testSetGetContentType
+     */
+    public function testContentTypeValue(): void
+    {
+        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_HTML);
+        $this->assertEquals(
+            "text/html; charset=utf-8",
+            HttpHeaders::getHeader("Content-Type")
+        );
+
+        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_JSON);
+        $this->assertEquals(
+            "application/json; charset=utf-8",
+            HttpHeaders::getHeader("Content-Type")
+        );
+    }
+
 }
