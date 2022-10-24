@@ -1,29 +1,57 @@
 # Project
 
-Build, run and access:
+## Structure
 ```
-docker-compose build  
-docker-compose up -d  
-docker-compose up -d --build  
-127.0.0.1  
+docker
+docker-compose
+debian
+apache
+php
+xdebug
+composer
+slim framework
+psr-4
+PHP Unit
+Mockery
+PHP Storm Integration
 ```
 
-Manage:
+## Build, Run and Access
 ```
-docker exec -it php-apache /bin/bash
-composer install  
+docker-compose build
+docker-compose up -d
+docker-compose up -d --build
+127.0.0.1
+```
+
+## Manage
+```
+docker exec -it project_base___server /bin/bash
+docker-compose exec -it server /bin/bash
+composer install
 composer update
 composer dumpautoload
-composer test  
-composer testdox  
-composer coverage  
-composer clear  
-bash permissions.sh  
+composer test
+composer testdox
+composer coverage
+composer clear
+bash permissions.sh
 ```
+---
 
 
 
-# Setup XDebug on PHP Storm
+# IDE - PHP Storm
+
+## PHP Unit
+- On PHP Storm, go to **"File > Settings"** to open the Settings menu;
+- Open **"PHP > Test Frameworks"**;
+- Click on the **"+"** button in the top left corner, and select **"PHP Unit from remote interpreter"**;
+- Select **"PHP-Apache"**;  
+  ![Image](%23DOCs/images/phpstorm-phpunit/1-0-Test-Frameworks.png)
+  ![Image](%23DOCs/images/phpstorm-phpunit/1-2-Remote-Interpreter.png)
+
+## XDebug
 - On PHP Storm, go to **"File > Settings"** to open the Settings menu.
 - Open **"PHP"**;
     - On **"PHP language level"** select **"8.1"**;
@@ -55,13 +83,3 @@ bash permissions.sh
             - Map the folder **"Project files/.../src/"** to **"/var/www/html"**;
             - Map the folder **"Project files/.../src/public/"** to **"/var/www/html/public"**;
 ![Image](%23DOCs/images/phpstorm-xdebug/3-0-Server.png)
-
-
-
-# Setup PHP Unit on PHP Storm
-- On PHP Storm, go to **"File > Settings"** to open the Settings menu;
-- Open **"PHP > Test Frameworks"**;
-- Click on the **"+"** button in the top left corner, and select **"PHP Unit from remote interpreter"**; 
-- Select **"PHP-Apache"**;  
-![Image](%23DOCs/images/phpstorm-phpunit/1-0-Test-Frameworks.png)
-![Image](%23DOCs/images/phpstorm-phpunit/1-2-Remote-Interpreter.png)
