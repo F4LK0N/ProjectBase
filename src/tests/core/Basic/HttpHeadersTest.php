@@ -7,9 +7,53 @@ require_once __DIR__."/../../../core/Basic/HttpHeaders.php";
 
 use Core\Basic\HttpHeaders;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 final class HttpHeadersTest extends TestCase
 {
+    private static ?ReflectionClass $reflectionClass = null;
+    private static array            $defaultValues   = [];
+
+
+
+    static public function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        self::$reflectionClass = new ReflectionClass(HttpHeaders::class);
+
+        self::$defaultValues['HTTP_HEADERS_RUN']              = $_SERVER['HTTP_HEADERS_RUN'] ?? null;
+        self::$defaultValues['HTTP_HEADERS_RUN_SEND_HEADERS'] = $_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS'] ?? null;
+        self::$defaultValues['HTTP_HEADER_CONTENT_TYPE']      = $_SERVER['HTTP_HEADER_CONTENT_TYPE'] ?? null;
+
+        unset($_SERVER['HTTP_HEADERS_RUN']);
+        unset($_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS']);
+        unset($_SERVER['HTTP_HEADER_CONTENT_TYPE']);
+    }
+    protected function setUp(): void
+    {
+        self::$reflectionClass->setStaticPropertyValue('contentType', 0);
+        self::$reflectionClass->setStaticPropertyValue('headers', []);
+
+        unset($_SERVER['HTTP_HEADERS_RUN']);
+        unset($_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS']);
+        unset($_SERVER['HTTP_HEADER_CONTENT_TYPE']);
+    }
+    static public function tearDownAfterClass(): void
+    {
+        parent::tearDownAfterClass();
+
+        self::$reflectionClass->setStaticPropertyValue('contentType', 0);
+        self::$reflectionClass->setStaticPropertyValue('headers', []);
+        self::$reflectionClass=null;
+
+        if(self::$defaultValues['HTTP_HEADER_CONTENT_TYPE']!==null){
+            $_SERVER['HTTP_HEADER_CONTENT_TYPE'] = self::$defaultValues['HTTP_HEADER_CONTENT_TYPE'];
+        }
+
+        self::$defaultValues = [];
+    }
+
     public function testSetInvalidHeader(): void
     {
         $this->assertFalse(
@@ -58,6 +102,12 @@ final class HttpHeadersTest extends TestCase
             $headers['Header-Name']
         );
 
+        $headers = HttpHeaders::getHeaders();
+        $this->assertEquals(
+            1,
+            count($headers)
+        );
+
         HttpHeaders::clearHeaders();
         $headers = HttpHeaders::getHeaders();
         $this->assertEquals(
@@ -69,32 +119,18 @@ final class HttpHeadersTest extends TestCase
     /**
      * @depends testSetGetHeader
      */
-    public function testSetGetContentType(): void
+    public function testSetGetContentTypeDefault(): void
     {
+        //### NOT SET ###
         $this->assertEquals(
-            HttpHeaders::CONTENT_TYPE_HTML,
+            0,
             HttpHeaders::getContentType()
         );
 
-        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_JSON);
-        $this->assertEquals(
-            HttpHeaders::CONTENT_TYPE_JSON,
-            HttpHeaders::getContentType()
-        );
 
-        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_HTML);
-        $this->assertEquals(
-            HttpHeaders::CONTENT_TYPE_HTML,
-            HttpHeaders::getContentType()
-        );
 
-        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_JSON);
-        $this->assertEquals(
-            HttpHeaders::CONTENT_TYPE_JSON,
-            HttpHeaders::getContentType()
-        );
-
-        HttpHeaders::setContentType(3);
+        //### DEFAULT ###
+        HttpHeaders::setContentType();
         $this->assertEquals(
             HttpHeaders::CONTENT_TYPE_HTML,
             HttpHeaders::getContentType()
@@ -102,7 +138,37 @@ final class HttpHeadersTest extends TestCase
     }
 
     /**
-     * @depends testSetGetContentType
+     * @depends testSetGetContentTypeDefault
+     */
+    public function testSetGetContentTypeDirectValue(): void
+    {
+        //### DEFAULT ###
+        HttpHeaders::setContentType(99999);
+        $this->assertEquals(
+            HttpHeaders::CONTENT_TYPE_HTML,
+            HttpHeaders::getContentType()
+        );
+
+
+
+        //### DIRECT VALUE ###
+        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_HTML);
+        HttpHeaders::setContentType(99999);
+        $this->assertEquals(
+            HttpHeaders::CONTENT_TYPE_HTML,
+            HttpHeaders::getContentType()
+        );
+
+        HttpHeaders::setContentType(HttpHeaders::CONTENT_TYPE_JSON);
+        HttpHeaders::setContentType(99999);
+        $this->assertEquals(
+            HttpHeaders::CONTENT_TYPE_JSON,
+            HttpHeaders::getContentType()
+        );
+    }
+
+    /**
+     * @adepends testSetGetContentType
      */
     public function testContentTypeValue(): void
     {
