@@ -1,33 +1,44 @@
 # Project
 
-## Structure
-```
-docker
-docker-compose
-debian
-apache
-php
-xdebug
-composer
-slim framework
-psr-4
-PHP Unit
-Mockery
-PHP Storm Integration
-```
+## Requirements
+* **Docker** (20.10.17 or greater)
+* **Docker Compose** (2.10.2 or greater)
+* **PHP Storm** (Recommended Tool - 2022.2.1 or greater)
 
-## Build, Run and Access
+## Structure
+* **Docker** - (Platform as a Service)
+* **Docker Compose** - (Multi-container Docker Management)
+* **Debian** 11.5 - (Linux Operational System)
+* **Apache** 2.4.54 - (HTTP Server)
+* **PHP** 8.1 - (Scripting Language)
+* **XDebug** 3.1.5 - (Debugger and Profiler Tool)
+* **Composer** 2.4.3 - (PHP Dependency Manager)
+* **Slim** 4.10 - (PHP Micro Framework)
+* **PSR-4** - (Specification: Classes Autoloader)
+* **PSR-7** - (Specification: HTTP Message Interfaces)
+* **PHP Unit** 9.5.25 - (Testing Framework)
+* **Mockery** 1.5.1 - (Mock Object Framework)
+* **PHP Storm Integration**
+
+## Build and Run and Access
 ```
 docker-compose build
 docker-compose up -d
 docker-compose up -d --build
-127.0.0.1
+http://127.0.0.1
+https://127.0.0.1
+http://127.0.0.1:3306 (MySQL)
+http://127.0.0.1:8080 (PHP My Admin)
 ```
 
 ## Manage
 ```
-docker exec -it project_base___server /bin/bash
+docker exec -it project_base-server /bin/bash
+docker exec -it project_base-mysql /bin/bash
+docker exec -it project_base-phpmyadmin /bin/bash
 docker-compose exec -it server /bin/bash
+docker-compose exec -it mysql /bin/bash
+docker-compose exec -it phpmyadmin /bin/bash
 composer install
 composer update
 composer dumpautoload
@@ -35,7 +46,6 @@ composer test
 composer testdox
 composer coverage
 composer clear
-bash permissions.sh
 ```
 ---
 
@@ -83,3 +93,22 @@ bash permissions.sh
             - Map the folder **"Project files/.../src/"** to **"/var/www/html"**;
             - Map the folder **"Project files/.../src/public/"** to **"/var/www/html/public"**;
 ![Image](%23DOCs/images/phpstorm-xdebug/3-0-Server.png)
+---
+
+
+
+# References
+* https://www.docker.com/
+* https://docs.docker.com/compose/
+* https://www.jetbrains.com/phpstorm/
+
+* https://www.debian.org/
+* https://httpd.apache.org/
+* https://www.php.net/
+* https://xdebug.org/
+* https://getcomposer.org/
+* https://www.slimframework.com/
+* https://www.php-fig.org/psr/psr-4/
+* https://www.php-fig.org/psr/psr-7/
+* https://phpunit.de/
+* http://docs.mockery.io/en/latest/
