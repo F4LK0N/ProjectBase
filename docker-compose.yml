@@ -7,9 +7,12 @@ services:
     environment:
       # Verify the .env file.
       - PROJECT_NAME=${PROJECT_NAME:?!!! ERROR !!! .env file not found at the root directory!}
-      # Define the environment variables.
+      # Environment variables.
+      # Every variable defined here must also be defined in:
+      # /.docker/server/apache/sites-enabled/main.conf
       - PROJECT_NAME
       - PROJECT_LABEL
+      - PROJECT_CONTENT_TYPE
       - SERVER_LOCATION
       - SERVER_PROVIDER
       - SERVER_ENVIRONMENT
