@@ -4,13 +4,16 @@ namespace Core\Basic;
 
 /**
  * $_SERVER['HTTP_HEADERS_RUN'] = false;
- * Stops the default behavior of set and send default headers.
+ * Stops the default behavior of SET and SEND default headers.
  *
  * $_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS'] = false;
- * Stops the default behavior of sending the http headers when calls run().
+ * Stops the default behavior of SEND default headers.
  *
  * $_SERVER['HTTP_HEADER_CONTENT_TYPE']
- * Sets the default value when run() calls setContentType().
+ * Set the ContentType value, if empty, when run() calls setContentType().
+ *
+ * $_SERVER['PROJECT_CONTENT_TYPE']
+ * Set the ContentType value, if empty, when run() calls setContentType().
  */
 class HttpHeaders
 {

@@ -169,9 +169,23 @@ final class HttpHeadersTest extends TestCase
      * @depends testContentTypeDirectValue
      * @dataProvider contentTypeProvider
      */
-    public function testContentTypePreScriptValue($contentType): void
+    public function testContentTypePreScriptVariable($contentType): void
     {
         $_SERVER['HTTP_HEADER_CONTENT_TYPE'] = $contentType;
+        HttpHeaders::setContentType();
+        $this->assertEquals(
+            $contentType,
+            HttpHeaders::getContentType()
+        );
+    }
+
+    /**
+     * @depends testContentTypePreScriptVariable
+     * @dataProvider contentTypeProvider
+     */
+    public function testContentTypeEnvironmentVariable($contentType): void
+    {
+        $_SERVER['PROJECT_CONTENT_TYPE'] = $contentType;
         HttpHeaders::setContentType();
         $this->assertEquals(
             $contentType,
