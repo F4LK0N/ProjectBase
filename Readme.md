@@ -20,7 +20,7 @@
 * **Mockery** 1.5.1 - (Mock Object Framework)
 * **PHP Storm Integration**
 
-## Build and Run and Access
+## Build and Run
 ```
 docker-compose build
 docker-compose up -d
@@ -32,13 +32,11 @@ http://127.0.0.1:8080 (PHP My Admin)
 ```
 
 ## Manage
+
+### Server
 ```
 docker exec -it project_base-server /bin/bash
-docker exec -it project_base-mysql /bin/bash
-docker exec -it project_base-phpmyadmin /bin/bash
 docker-compose exec -it server /bin/bash
-docker-compose exec -it mysql /bin/bash
-docker-compose exec -it phpmyadmin /bin/bash
 composer install
 composer update
 composer dumpautoload
@@ -47,6 +45,19 @@ composer testdox
 composer coverage
 composer clear
 ```
+
+### MySQL
+```
+docker exec -it project_base-mysql /bin/bash
+docker-compose exec -it mysql /bin/bash
+```
+
+### PHP My Admin
+```
+docker exec -it project_base-phpmyadmin /bin/bash
+docker-compose exec -it phpmyadmin /bin/bash
+```
+
 ---
 
 
@@ -101,7 +112,6 @@ composer clear
 * https://www.docker.com/
 * https://docs.docker.com/compose/
 * https://www.jetbrains.com/phpstorm/
-
 * https://www.debian.org/
 * https://httpd.apache.org/
 * https://www.php.net/
