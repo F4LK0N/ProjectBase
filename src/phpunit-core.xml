@@ -25,6 +25,7 @@
         cacheDirectory="/tmp/phpunit-cache/code-coverage-html"
         includeUncoveredFiles="true"
         processUncoveredFiles="true"
+        pathCoverage="true"
     >
         <include>
             <directory suffix=".php">core</directory>
