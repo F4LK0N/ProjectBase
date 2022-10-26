@@ -144,14 +144,16 @@ class HttpHeaders
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
         header("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
     }
+
     static private function runOptions()
     {
-        //OPTIONS (Pre-flight requests)
+        //OPTIONS (Pre-flight Requests)
         //If the $_SERVER['REQUEST_METHOD'] is of the type "OPTIONS" is probably because the ajax plugin from the front-end is performing a 'pre-flight' request.
         //A 'pre-flight' is a request to the API to know the accepted content formats, compression, cross-origins requests, etc.
         //In this case the server only need to respond with http headers and don't need to enter inside the API logic, saving resources.
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS'){
             exit(0);
+        }
     }
 
 }
