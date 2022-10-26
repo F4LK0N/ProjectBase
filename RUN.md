@@ -57,5 +57,5 @@ clear; echo "### PHP UNIT - CORE TEST ###"; docker-compose exec server composer 
 clear; echo "### PHP UNIT - CORE TEST (DOX) ###"; docker-compose exec server composer core-dox; echo "";
 ```
 ```shell
-clear; echo "### PHP UNIT - TCORE EST (COVERAGE) ###"; docker-compose exec server composer core-cover; echo "";
+clear; echo "### PHP UNIT - CORE TEST (COVERAGE) ###"; docker-compose exec server composer core-cover; echo "";
 ```
