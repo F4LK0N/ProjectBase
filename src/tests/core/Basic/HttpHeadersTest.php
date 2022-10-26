@@ -63,6 +63,18 @@ final class HttpHeadersTest extends TestCase
             HttpHeaders::setHeader(" ")
         );
         $this->assertFalse(
+            HttpHeaders::setHeader(":")
+        );
+        $this->assertFalse(
+            HttpHeaders::setHeader(": ")
+        );
+        $this->assertFalse(
+            HttpHeaders::setHeader(" :")
+        );
+        $this->assertFalse(
+            HttpHeaders::setHeader(" : ")
+        );
+        $this->assertFalse(
             HttpHeaders::setHeader("Invalid Value With No Separator")
         );
         $this->assertFalse(
