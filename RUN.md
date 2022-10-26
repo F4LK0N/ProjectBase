@@ -54,11 +54,11 @@ clear; echo "### PHP UNIT - TEST (COVERAGE) ###"; docker-compose exec server com
 ```
 
 ```shell
-clear; echo "### PHP UNIT - TEST ###"; docker-compose exec server composer test; echo "";
+clear; echo "### PHP UNIT - CORE TEST ###"; docker-compose exec server composer core-test; echo "";
 ```
 ```shell
-clear; echo "### PHP UNIT - TEST (DOX) ###"; docker-compose exec server composer dox; echo "";
+clear; echo "### PHP UNIT - CORE TEST (DOX) ###"; docker-compose exec server composer core-dox; echo "";
 ```
 ```shell
-clear; echo "### PHP UNIT - TEST (COVERAGE) ###"; docker-compose exec server composer cover; echo "";
+clear; echo "### PHP UNIT - TCORE EST (COVERAGE) ###"; docker-compose exec server composer core-cover; echo "";
 ```
