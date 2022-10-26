@@ -1,13 +1,10 @@
 <?php declare(strict_types=1);
-
-namespace Core\Tests\Basic;
-
-$_SERVER['HTTP_HEADERS_RUN']=false;
-require_once __DIR__."/../../../core/Basic/HttpHeaders.php";
+namespace Tests\Core\Basic;
 
 use Core\Basic\HttpHeaders;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionException;
 
 final class HttpHeadersTest extends TestCase
 {
@@ -21,23 +18,28 @@ final class HttpHeadersTest extends TestCase
         parent::setUpBeforeClass();
 
         self::$reflectionClass = new ReflectionClass(HttpHeaders::class);
+        self::$reflectionClass->setStaticPropertyValue('contentType', 0);
+        self::$reflectionClass->setStaticPropertyValue('headers', []);
 
-        self::$defaultValues['HTTP_HEADERS_RUN']              = $_SERVER['HTTP_HEADERS_RUN'] ?? null;
-        self::$defaultValues['HTTP_HEADERS_RUN_SEND_HEADERS'] = $_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS'] ?? null;
-        self::$defaultValues['HTTP_HEADER_CONTENT_TYPE']      = $_SERVER['HTTP_HEADER_CONTENT_TYPE'] ?? null;
+        self::$defaultValues['HTTP_HEADERS_DEFAULT_RUN']          = $_SERVER['HTTP_HEADERS_DEFAULT_RUN'] ?? null;
+        self::$defaultValues['HTTP_HEADERS_DEFAULT_SEND_HEADERS'] = $_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS'] ?? null;
+        self::$defaultValues['HTTP_HEADER_CONTENT_TYPE']          = $_SERVER['HTTP_HEADER_CONTENT_TYPE'] ?? null;
+        self::$defaultValues['PHP_SELF']                          = $_SERVER['PHP_SELF'] ?? null;
 
-        unset($_SERVER['HTTP_HEADERS_RUN']);
-        unset($_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS']);
+        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']);
+        unset($_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS']);
         unset($_SERVER['HTTP_HEADER_CONTENT_TYPE']);
+        unset($_SERVER['PHP_SELF']);
     }
     protected function setUp(): void
     {
         self::$reflectionClass->setStaticPropertyValue('contentType', 0);
         self::$reflectionClass->setStaticPropertyValue('headers', []);
 
-        unset($_SERVER['HTTP_HEADERS_RUN']);
-        unset($_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS']);
+        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']);
+        unset($_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS']);
         unset($_SERVER['HTTP_HEADER_CONTENT_TYPE']);
+        unset($_SERVER['PHP_SELF']);
     }
     static public function tearDownAfterClass(): void
     {
@@ -53,6 +55,46 @@ final class HttpHeadersTest extends TestCase
 
         self::$defaultValues = [];
     }
+    
+    
+    /**
+     * @throws ReflectionException
+     */
+    public function testCanRun(): void
+    {
+        $method = self::$reflectionClass->getMethod("canRun");
+        $method->setAccessible(true);
+        
+        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']);
+        unset($_SERVER['PHP_SELF']);
+        $this->assertTrue(
+            $method->invokeArgs(null, [])
+        );
+    
+        $_SERVER['HTTP_HEADERS_DEFAULT_RUN']=true;
+        $this->assertTrue(
+            $method->invokeArgs(null, [])
+        );
+    
+        $_SERVER['HTTP_HEADERS_DEFAULT_RUN']=false;
+        $this->assertFalse(
+            $method->invokeArgs(null, [])
+        );
+        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']);
+    
+        $_SERVER['PHP_SELF']=true;
+        $this->assertTrue(
+            $method->invokeArgs(null, [])
+        );
+    
+        $_SERVER['PHP_SELF']="./vendor/bin/phpunit";
+        $this->assertFalse(
+            $method->invokeArgs(null, [])
+        );
+        unset($_SERVER['PHP_SELF']);
+    }
+
+
 
     public function testSetInvalidHeader(): void
     {
