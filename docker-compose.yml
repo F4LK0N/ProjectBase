@@ -31,6 +31,7 @@ services:
       #TODO: Map Docker host logs.
       - ./data/logs/apache/:/var/log/apache2/
       - ./data/logs/php/:/var/log/php/
+      - ./data/tests/:/var/tests/
     networks:
       - backend
     ports:
