@@ -22,7 +22,7 @@
     </testsuites>
 
     <coverage
-        cacheDirectory="/tmp/phpunit-cache/code-coverage-html"
+        cacheDirectory="/tmp/phpunit-cache/coverage/"
         includeUncoveredFiles="true"
         processUncoveredFiles="true"
     >
