@@ -36,28 +36,26 @@ http://127.0.0.1:8080 (PHP My Admin)
 ### Server
 ```
 docker exec -it project_base-server /bin/bash
-docker-compose exec -it server /bin/bash
+docker-compose exec server bash
 composer install
 composer update
 composer dumpautoload
 composer test
 composer testdox
 composer coverage
-composer clear
 ```
 
 ### MySQL
 ```
 docker exec -it project_base-mysql /bin/bash
-docker-compose exec -it mysql /bin/bash
+docker-compose exec mysql bash
 ```
 
 ### PHP My Admin
 ```
 docker exec -it project_base-phpmyadmin /bin/bash
-docker-compose exec -it phpmyadmin /bin/bash
+docker-compose exec phpmyadmin bash
 ```
-
 ---
 
 
