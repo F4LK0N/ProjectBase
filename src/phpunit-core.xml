@@ -17,7 +17,7 @@
 >
     <testsuites>
         <testsuite name="default">
-            <directory>tests/app</directory>
+            <directory>tests/core</directory>
         </testsuite>
     </testsuites>
 
@@ -27,11 +27,11 @@
         processUncoveredFiles="true"
     >
         <include>
-            <directory suffix=".php">app</directory>
+            <directory suffix=".php">core</directory>
         </include>
         <report>
             <html
-                outputDirectory="/var/tests/test-coverage-html/"
+                outputDirectory="/var/tests/core-coverage/"
                 lowUpperBound="50"
                 highLowerBound="90"
             />
