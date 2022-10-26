@@ -115,16 +115,16 @@ final class HttpHeadersTest extends TestCase
         );
 
         $headers = HttpHeaders::getHeaders();
-        $this->assertEquals(
+        $this->assertCount(
             1,
-            count($headers)
+            $headers
         );
 
         HttpHeaders::clearHeaders();
         $headers = HttpHeaders::getHeaders();
-        $this->assertEquals(
+        $this->assertCount(
             0,
-            count($headers)
+            $headers
         );
     }
 
