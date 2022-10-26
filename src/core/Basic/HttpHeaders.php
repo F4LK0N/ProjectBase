@@ -43,42 +43,6 @@ class HttpHeaders
         return true;
     }
 
-    static public function setHeader(string $value): bool
-    {
-        $value = trim($value);
-        $separatorPosition = strpos($value, ":");
-
-        if($separatorPosition===false || $separatorPosition<1 || $separatorPosition===(strlen($value)-1)){
-            return false;
-        }
-
-        $headerParts = explode(":", $value, 2);
-        $headerParts[0] = trim($headerParts[0]);
-        $headerParts[1] = trim($headerParts[1]);
-
-        if(strlen($headerParts[0])===0 || strlen($headerParts[1])===0){
-            return false;
-        }
-
-        self::$headers[$headerParts[0]] = $headerParts[1];
-        return true;
-    }
-    static public function getHeader($name): ?string
-    {
-        if(isset(self::$headers[$name])){
-            return self::$headers[$name];
-        }
-        return null;
-    }
-    static public function getHeaders(): array
-    {
-        return self::$headers;
-    }
-    static public function clearHeaders(): void
-    {
-        self::$headers = [];
-    }
-
     static private function runContentType(): void
     {
         self::setContentType();
@@ -154,6 +118,42 @@ class HttpHeaders
         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS'){
             exit(0);
         }
+    }
+
+    static public function setHeader(string $value): bool
+    {
+        $value = trim($value);
+        $separatorPosition = strpos($value, ":");
+
+        if($separatorPosition===false || $separatorPosition<1 || $separatorPosition===(strlen($value)-1)){
+            return false;
+        }
+
+        $headerParts = explode(":", $value, 2);
+        $headerParts[0] = trim($headerParts[0]);
+        $headerParts[1] = trim($headerParts[1]);
+
+        if(strlen($headerParts[0])===0 || strlen($headerParts[1])===0){
+            return false;
+        }
+
+        self::$headers[$headerParts[0]] = $headerParts[1];
+        return true;
+    }
+    static public function getHeader($name): ?string
+    {
+        if(isset(self::$headers[$name])){
+            return self::$headers[$name];
+        }
+        return null;
+    }
+    static public function getHeaders(): array
+    {
+        return self::$headers;
+    }
+    static public function clearHeaders(): void
+    {
+        self::$headers = [];
     }
 
 }
