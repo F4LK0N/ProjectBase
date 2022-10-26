@@ -28,9 +28,13 @@
     },
     "scripts": {
         "da": "composer dumpautoload",
-        "test": "./vendor/bin/phpunit --no-coverage ./tests",
-        "testdox": "./vendor/bin/phpunit --testdox --no-coverage ./tests",
-        "coverage": "./vendor/bin/phpunit --coverage-html ./tests-coverage-html ./tests",
-        "clear": "rm -R ./tests-coverage-html"
+
+        "test":  "./vendor/bin/phpunit --no-coverage",
+        "dox":   "./vendor/bin/phpunit --no-coverage --testdox",
+        "cover": "./vendor/bin/phpunit",
+
+        "core-test":  "./vendor/bin/phpunit --configuration phpunit-core.xml --no-coverage",
+        "core-dox":   "./vendor/bin/phpunit --configuration phpunit-core.xml --no-coverage --testdox",
+        "core-cover": "./vendor/bin/phpunit --configuration phpunit-core.xml"
     }
 }
