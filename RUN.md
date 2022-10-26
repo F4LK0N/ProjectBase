@@ -19,10 +19,7 @@ clear; echo "### CONTAINERS - DOWN ###"; docker-compose down; echo "";
 ```
 
 ```shell
-clear; echo "### CONTAINERS - LIST ###"; docker ps --filter name="^project_base\-.*$"; echo "";
-```
-```shell
-clear; echo "### CONTAINERS - LIST (ALL) ###"; docker ps --no-trunc --filter name="^project_base\-.*$" --format "table {{.Names}}\t{{upper .State}}\t{{.Status}}\t{{.RunningFor}}\t{{.Ports}}\t{{.Image}}\t{{.Size}}\t{{.Command}}"; echo "";
+clear; echo "### CONTAINERS - LIST ###"; docker ps --no-trunc --filter name="^project_base\-.*$" --format "table {{.Names}}\t{{upper .State}}\t{{.Status}}\t{{.RunningFor}}\t{{.Ports}}\t{{.Image}}\t{{.Size}}\t{{.Command}}"; echo "";
 ```
 ```shell
 clear; echo "### CONTAINERS - LIST (NETWORKS) ###"; docker ps --no-trunc --filter name="^project_base\-.*$" --format "table {{.Names}}\t{{upper .State}}\t{{.Ports}}\t{{.Networks}}"; echo "";
