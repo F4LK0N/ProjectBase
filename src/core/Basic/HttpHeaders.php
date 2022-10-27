@@ -3,10 +3,23 @@
 namespace Core\Basic;
 
 /**
- * $_SERVER['HTTP_HEADERS_RUN'] = false;
+ * Manage the HTTP Headers sent in the response.
+ * 
+ * Provide methods to set and store HTTP Headers
+ * and later send all the stored header to the response.
+ * 
+ * 
+ * By default, this class run before most of the code is loaded, 
+ * set the default header,
+ * and check if the request is a preflight request.
+ * If it is stop the rest of the code from loading and executing.
+ * 
+ * This change 
+ * 
+ * $_SERVER['HTTP_HEADERS_DEFAULT_RUN'] = false;
  * Stops the default behavior of SET and SEND default headers.
  *
- * $_SERVER['HTTP_HEADERS_RUN_SEND_HEADERS'] = false;
+ * $_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS'] = false;
  * Stops the default behavior of SEND default headers.
  *
  * $_SERVER['HTTP_HEADER_CONTENT_TYPE']
@@ -28,30 +41,24 @@ class HttpHeaders
     static public function run(): void
     {
         if(self::canRun()){
-            self::runContentType();
-            self::runCORS();
-            //self::sendHeaders();
-            self::runOptions();
+            self::setContentType();
+            self::setDefaultCORS();
+            self::sendHeaders();
+            self::preflightCheck();
         }
     }
     static private function canRun(): bool
     {
-        if(isset($_SERVER['HTTP_HEADERS_RUN']) && $_SERVER['HTTP_HEADERS_RUN']===false){
+        if(
+            (isset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']) && $_SERVER['HTTP_HEADERS_DEFAULT_RUN']===false) ||
+            (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF']==="./vendor/bin/phpunit")
+        ){
             return false;
         }
 
         return true;
     }
 
-    static private function runContentType(): void
-    {
-        self::setContentType();
-
-//        if($_SERVER['REQUEST_METHOD']==='OPTIONS' || isset($_GET['TDD']))
-//            self::ContentType(HTTP_Header::CONTENT_TYPE_HTML);
-//        else
-//            self::ContentType(HTTP_Header::CONTENT_TYPE_JSON);
-    }
     static public function setContentType(int $value=0): void
     {
         $newValue = 0;
@@ -100,7 +107,7 @@ class HttpHeaders
         return $header;
     }
 
-    static private function runCORS()
+    static private function setDefaultCORS()
     {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Credentials: true');
@@ -109,7 +116,7 @@ class HttpHeaders
         header("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
     }
 
-    static private function runOptions()
+    static private function preflightCheck()
     {
         //OPTIONS (Pre-flight Requests)
         //If the $_SERVER['REQUEST_METHOD'] is of the type "OPTIONS" is probably because the ajax plugin from the front-end is performing a 'pre-flight' request.
@@ -120,6 +127,10 @@ class HttpHeaders
         }
     }
 
+    static public function clearHeaders(): void
+    {
+        self::$headers = [];
+    }
     static public function setHeader(string $value): bool
     {
         $value = trim($value);
@@ -151,9 +162,9 @@ class HttpHeaders
     {
         return self::$headers;
     }
-    static public function clearHeaders(): void
+    static public function sendHeaders(): void
     {
-        self::$headers = [];
+
     }
 
 }
