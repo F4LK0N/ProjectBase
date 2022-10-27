@@ -29,6 +29,7 @@ services:
       #TODO: Verify the necessity of map the .env file to inside the src folder.
       # Logs
       #TODO: Map Docker host logs.
+      #https://www.google.com/search?client=firefox-b-d&q=docker+log+location
       - ./data/logs/apache/:/var/log/apache2/
       - ./data/logs/php/:/var/log/php/
       - ./data/tests/:/var/tests/
