@@ -1,6 +1,7 @@
 <?php
-
 namespace Core\Basic;
+
+require_once "eHTTP_HEADER_CONTENT_TYPE.php";
 
 /**
  * Manage the HTTP Headers sent in the response.
@@ -30,11 +31,8 @@ namespace Core\Basic;
  */
 class HttpHeaders
 {
-    public const CONTENT_TYPE_HTML = 1;
-    public const CONTENT_TYPE_JSON = 2;
-
-    static private int   $contentType = 0;
-    static private array $headers     = [];
+    static private eHTTP_HEADER_CONTENT_TYPE $contentType = eHTTP_HEADER_CONTENT_TYPE::UNDEFINED;
+    static private array                     $headers     = [];
 
 
 
@@ -59,15 +57,15 @@ class HttpHeaders
         return true;
     }
 
-    static public function setContentType(int $value=0): void
+    static public function setContentType(eHTTP_HEADER_CONTENT_TYPE $value = eHTTP_HEADER_CONTENT_TYPE::UNDEFINED): void
     {
-        $newValue = 0;
+        $newValue = eHTTP_HEADER_CONTENT_TYPE::UNDEFINED;
 
         //Direct Value
-        if($value!==0) {
+        if($value!==eHTTP_HEADER_CONTENT_TYPE::UNDEFINED) {
             $newValue = $value;
         }
-        else if(self::$contentType===0)
+        else if(self::$contentType===eHTTP_HEADER_CONTENT_TYPE::UNDEFINED)
         {
             //Pre Script Variable
             if(isset($_SERVER['HTTP_HEADER_CONTENT_TYPE'])) {
@@ -80,18 +78,18 @@ class HttpHeaders
         }
 
         //Set New Value
-        if($newValue===self::CONTENT_TYPE_HTML || $newValue===self::CONTENT_TYPE_JSON){
+        if($newValue===eHTTP_HEADER_CONTENT_TYPE::HTML || $newValue===eHTTP_HEADER_CONTENT_TYPE::JSON){
             self::$contentType = $newValue;
         }
 
         //Default Value
-        if(self::$contentType!==self::CONTENT_TYPE_HTML && self::$contentType!==self::CONTENT_TYPE_JSON){
-            self::$contentType = self::CONTENT_TYPE_HTML;
+        if(self::$contentType!==eHTTP_HEADER_CONTENT_TYPE::HTML && self::$contentType!==eHTTP_HEADER_CONTENT_TYPE::JSON){
+            self::$contentType = eHTTP_HEADER_CONTENT_TYPE::HTML;
         }
 
         self::setHeader(self::createContentTypeHeader());
     }
-    static public function getContentType(): int
+    static public function getContentType(): eHTTP_HEADER_CONTENT_TYPE
     {
         return self::$contentType;
     }
@@ -100,7 +98,7 @@ class HttpHeaders
         //Property
         $header = "Content-Type: ";
         //Type
-        $header .= (self::$contentType===self::CONTENT_TYPE_JSON)?"application/json;":"text/html;";
+        $header .= (self::$contentType===eHTTP_HEADER_CONTENT_TYPE::HTML)?"application/json;":"text/html;";
         //Encoding
         $header.=" charset=utf-8";
 
@@ -116,7 +114,7 @@ class HttpHeaders
         self::setHeader("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
     }
 
-    static private function preflightCheck()
+    static private function preflightCheck(): void
     {
         //OPTIONS (Pre-flight Requests)
         //If the $_SERVER['REQUEST_METHOD'] is of the type "OPTIONS" is probably because the ajax plugin from the front-end is performing a 'pre-flight' request.
@@ -151,7 +149,7 @@ class HttpHeaders
         self::$headers[$headerParts[0]] = $headerParts[1];
         return true;
     }
-    static public function getHeader($name): ?string
+    static public function getHeader(string $name): ?string
     {
         if(isset(self::$headers[$name])){
             return self::$headers[$name];
@@ -164,7 +162,9 @@ class HttpHeaders
     }
     static public function sendHeaders(): void
     {
-
+        foreach(self::$headers as $name => $value){
+            header("$name: $value");
+        }
     }
 
 }
