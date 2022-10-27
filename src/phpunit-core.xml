@@ -9,6 +9,7 @@
     beStrictAboutCoversAnnotation="false"
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTodoAnnotatedTests="true"
+    beStrictAboutTestsThatDoNotTestAnything="false"
     convertDeprecationsToExceptions="true"
     failOnRisky="false"
     failOnWarning="false"

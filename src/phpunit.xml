@@ -10,6 +10,7 @@
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTodoAnnotatedTests="true"
     convertDeprecationsToExceptions="true"
+    beStrictAboutTestsThatDoNotTestAnything="false"
     failOnRisky="false"
     failOnWarning="false"
     verbose="true"
