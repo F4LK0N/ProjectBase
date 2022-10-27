@@ -8,6 +8,10 @@ indent_size = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[*.php]
+trim_trailing_whitespace = false
+ij_php_keep_indents_on_empty_lines = true
+
 [*.md]
 trim_trailing_whitespace = false
 
