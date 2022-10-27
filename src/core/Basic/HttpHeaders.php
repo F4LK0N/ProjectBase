@@ -107,13 +107,13 @@ class HttpHeaders
         return $header;
     }
 
-    static private function setDefaultCORS()
+    static private function setDefaultCORS(): void
     {
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Max-Age: 86400');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-        header("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
+        self::setHeader('Access-Control-Allow-Origin: *');
+        self::setHeader('Access-Control-Allow-Credentials: true');
+        self::setHeader('Access-Control-Max-Age: 86400');
+        self::setHeader("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        self::setHeader("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
     }
 
     static private function preflightCheck()
