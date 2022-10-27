@@ -2,18 +2,19 @@
 namespace App\Models;
 
 use Core\Models\Model;
-use Core\DB\Table;
+use Core\DB;
 
 class Users extends Model
 {
     public function getDbTable()
     {
-        return (new Table("Users"))
+        return (new DB\Table("Users"))
             ->engine("InnoDB")
             ->collation("latin1_swedish_ci")
             ->comment("")
             ->fields([
-
+                (new DB\Field("id"))
+                ->setType()
             ]);
 
         return [

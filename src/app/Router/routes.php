@@ -7,14 +7,14 @@ use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 
 /**
- * @var App $app
+ * @var App $GLOBALS['app']
  */
-$app->get('/', function (Request $request, Response $response, array $args) {
-    $response->getBody()->write("Hello World!");
+$GLOBALS['app']->get('/', function (Request $request, Response $response, array $args) {
+    $response->getBody()->write($_SERVER['PROJECT_LABEL']);
     return $response;
 });
 
-$app->group('/Dev', function (RouteCollectorProxy $app)
+$GLOBALS['app']->group('/Dev', function (RouteCollectorProxy $app)
 {
     $app->get('/', function (Request $request, Response $response, array $args) {
         return (new DevController($request, $response, $args))->index();

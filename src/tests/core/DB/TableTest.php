@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Tests\core\DB;
+namespace Tests\Core\DB;
 
 use Core\DB\Table;
 use PHPUnit\Framework\TestCase;
