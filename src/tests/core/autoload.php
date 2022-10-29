@@ -1,2 +1,2 @@
 <?php
-define("PATH_CORE", dirname(rtrim(__DIR__, "/"), 2).'/core');
+define("CORE_PATH", dirname(rtrim(__DIR__, "/"), 2).'/core');
