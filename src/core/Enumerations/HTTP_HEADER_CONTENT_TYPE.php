@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
-namespace Core\Basic;
+namespace Core\Enumerations;
 
-enum eHTTP_HEADER_CONTENT_TYPE: string
+enum HTTP_HEADER_CONTENT_TYPE: string
 {
     case UNDEFINED = "";
     case HTML      = "HTML";
