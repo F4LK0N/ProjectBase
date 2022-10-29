@@ -18,8 +18,8 @@ use Core\Enumerations\HTTP_HEADER_CONTENT_TYPE;
  * customized values.
  *
  * Provide methods to set CORS (Cross Origin Resource Sharing) 
- * headers with default, including response from CORS headers 
- * sent in the request headers, or customized values.
+ * headers with default values, including response from CORS 
+ * headers sent in the request, or customized values.
  * 
  * Provide a method to handle OPTIONS (Preflight Request) header
  * and stop unnecessary code loading and processing. 
@@ -34,7 +34,7 @@ use Core\Enumerations\HTTP_HEADER_CONTENT_TYPE;
  * execution. (calling 'exit(0)') it will spare server resources.
  * 
  * By default, this class runs right after it is loaded, on 
- * FirstRun mode, and execute these default behaviors: 
+ * FirstRunDefaultBehavior mode, and execute these default behaviors: 
  * - Set and store the default Content-Type header;
  * - Set and store the default CORS headers;
  * - Send all stored headers;
@@ -45,29 +45,31 @@ use Core\Enumerations\HTTP_HEADER_CONTENT_TYPE;
  * CUSTOM BEHAVIOR:
  * 
  * To modify or prevent any of these behaviors, you can define a
- * constant with a custom value. These constant are:
- *
- * define('HTTP_HEADERS_DEFAULT_RUN', bool);
+ * constant with a custom value, like this:
+ * define('CONSTANT_NAME', value);
+ * 
+ * The constants are:
+ * HTTP_HEADERS_DEFAULT_RUN: bool
  * - Run the class right after its loaded, with the default behavior
  *   of every method. 
  * 
- * define('HTTP_HEADERS_DEFAULT_CONTENT_TYPE', string);
+ * HTTP_HEADERS_DEFAULT_CONTENT_TYPE: string
  * - The default Content-Type header value.
  *    "HTML" = "Content-Type: text/html; charset=utf-8"
  *    "JSON" = "Content-Type: application/json; charset=utf-8"
  * 
- * define('HTTP_HEADERS_DEFAULT_CONTENT_TYPE_SET', bool);
+ * HTTP_HEADERS_DEFAULT_RUN_CONTENT_TYPE: bool
  * - Set the default Content-Type header on first run.
  * 
- * define('HTTP_HEADERS_DEFAULT_CORS_SET', bool);
+ * HTTP_HEADERS_DEFAULT_RUN_CORS: bool
  * - Set the default CORS headers on first run.
  * 
- * define('HTTP_HEADERS_DEFAULT_HEADERS_SEND', bool);
+ * HTTP_HEADERS_DEFAULT_SEND_HEADERS: bool
  * - Send the default stored headers on first run. 
  *
- * define('HTTP_HEADERS_DEFAULT_PREFLIGHT_CHECK', bool);
+ * HTTP_HEADERS_DEFAULT_RUN_PREFLIGHT: bool
  * - Check if is a preflight request and stop code execution 
- *    on first run.
+ *   on first run.
  * 
  * 
  * 
@@ -88,14 +90,23 @@ use Core\Enumerations\HTTP_HEADER_CONTENT_TYPE;
  */
 class HTTP_HEADERS
 {
+    static private bool   $defaultRun            = true;
+    static private bool   $defaultRunContentType = true;
+    static private bool   $defaultRunCors        = true;
+    static private bool   $defaultRunPreflight   = true;
+    static private bool   $defaultSendHeaders    = true;
+    static private string $defaultContentType    = "HTML";
+    
+    static private bool   $firstRunWithDefaultBehavior = true;
+    
     static private HTTP_HEADER_CONTENT_TYPE $contentType = HTTP_HEADER_CONTENT_TYPE::UNDEFINED;
-    static private bool  $firstRunWithDefaultBehavior = true;
-    static private array                     $headers = [];
-
-
+    static private array                    $headers     = [];
+    
+    
 
     static public function run(bool $default): void
     {
+        self::loadDefaultDefinitions();
         if(self::canRun()){
             self::contentTypeSetDefault();
             self::setDefaultCORS();
@@ -103,6 +114,10 @@ class HTTP_HEADERS
             self::preflightCheck();
         }
         self::$firstRunWithDefaultBehavior=false;
+    }
+    static private function loadDefaultDefinitions(): void
+    {
+        
     }
     static private function canRun(): bool
     {
