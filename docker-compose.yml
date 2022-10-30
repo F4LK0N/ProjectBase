@@ -4,24 +4,24 @@ services:
     container_name: ${PROJECT_NAME}-server
     image: ${PROJECT_NAME}/server
     build: ./.docker/server
+    env_file:
+      - ./.env
     environment:
       # Verify the .env file.
       - PROJECT_NAME=${PROJECT_NAME:?!!! ERROR !!! .env file not found at the root directory!}
       # Environment variables.
       # Every variable defined here must also be defined in:
       # /.docker/server/apache/sites-enabled/main.conf
-      - PROJECT_NAME
-      - PROJECT_LABEL
-      - PROJECT_CONTENT_TYPE
-      - SERVER_LOCATION
-      - SERVER_PROVIDER
-      - SERVER_ENVIRONMENT
-      - MYSQL_HOST
-      - MYSQL_PORT
       - MYSQL_USER=${MYSQL_APP_USER}
       - MYSQL_PASS=${MYSQL_APP_PASS}
-      - MYSQL_DATABASE
-      - MYSQL_DATABASE_TEST
+      - MYSQL_ROOT_PASS=""
+      - MYSQL_APP_USER=""
+      - MYSQL_APP_PASS=""
+      - MYSQL_VIEW_USER=""
+      - MYSQL_VIEW_PASS=""
+      - PMA_USER=""
+      - PMA_PASS=""
+      - COMPOSE_PROJECT_NAME=""
     volumes:
       # Working Directory
       - ./src/:/var/www/html/
