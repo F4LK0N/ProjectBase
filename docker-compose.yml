@@ -26,7 +26,10 @@ services:
       # Working Directory
       - ./src/:/var/www/html/
       # DotEnv File
-      #TODO: Verify the necessity of map the .env file to inside the src folder.
+      #- ./.env:/var/www/html/.env
+      # This will be avoided to keep sensitive data protected.
+      # The required vars need for build proccess will be passed in this file and in:
+      # /.docker/server/apache/sites-enabled/main.conf
       # Logs
       #TODO: Map Docker host logs.
       #https://www.google.com/search?client=firefox-b-d&q=docker+log+location
