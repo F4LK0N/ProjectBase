@@ -31,6 +31,8 @@ RUN chmod 775 /usr/local/bin/cmd-entrypoint
 ########################################
 ### CONFIGURATION FILES ###
 ########################################
+# ORGINAL STRUCTURE:
+# ------------------
 # /etc/apache2/
 #   apache2.conf
 #   envvars
@@ -42,7 +44,15 @@ RUN chmod 775 /usr/local/bin/cmd-entrypoint
 #   mods-enabled/
 #   sites-available/
 #   sites-enabled/
-
+# ----------------
+# FINAL STRUCTURE:
+# ----------------
+#TODO:
+# /etc/apache2/
+#   apache2.conf
+#   envvars
+#   confs/
+#   mods/
 RUN rm /etc/apache2/apache2.conf
 RUN rm /etc/apache2/ports.conf
 ADD ./apache/apache2.conf /etc/apache2/apache2.conf
