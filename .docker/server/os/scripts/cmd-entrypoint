@@ -12,7 +12,6 @@ echo
 echo "##################################################"
 echo "### COMPOSER ###"
 echo "##################################################"
-#TODO: Don't run install and update if the vendor folder already exists.
 echo "### INSTALL ###"
 if [ -d "vendor" ]
 then
@@ -45,6 +44,21 @@ chmod -R 777 /var/www/html
 echo
 
 
+
+echo "##################################################"
+echo "### LOGS ###"
+echo "##################################################"
+LOG_TEXT="\n\n
+##################################################
+### DOCKER CONTAINER UP ###
+##################################################"
+echo -e "${LOG_TEXT}" >> /var/log/apache2/error.log
+echo -e "${LOG_TEXT}" >> /var/log/apache2/main_access.log
+echo -e "${LOG_TEXT}" >> /var/log/apache2/main_error.log
+echo -e "${LOG_TEXT}" >> /var/log/php/errors.log
+echo -e "${LOG_TEXT}" >> /var/log/php/xdebug.log
+unset LOG_TEXT
+echo
 
 
 
