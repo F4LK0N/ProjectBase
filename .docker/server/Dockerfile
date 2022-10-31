@@ -18,6 +18,11 @@ RUN apt-get clean
 #TODO: Remove temp files
 
 ########################################
+### BASH ###
+########################################
+ADD ./os/root/.bashrc /root/.bashrc
+
+########################################
 ### SCRIPTS ###
 ########################################
 ADD ./os/scripts/* /usr/local/bin/
