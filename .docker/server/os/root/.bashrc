@@ -89,7 +89,7 @@ PS1_TOP_HOST='\e[0;34m\H\e[m'
 PS1_TOP_PATH='\e[0;33m\w/\e[m'
 PS1_USER='\e[1;31m\u\e[m'
 PS1_PATH='\e[1;33m\W\e[m'
-PS1="$PS1_TOP_USER@$PS1_TOP_HOST:$PS1_TOP_PATH\n$PS1_USER:$PS1_PATH\033[5m#\033[m"
+PS1="$PS1_TOP_USER@$PS1_TOP_HOST:$PS1_TOP_PATH\n$PS1_USER:$PS1_PATH# "
 
 # You may uncomment the following lines if you want `ls' to be colorized:
 # export LS_OPTIONS='--color=auto'
@@ -97,13 +97,13 @@ PS1="$PS1_TOP_USER@$PS1_TOP_HOST:$PS1_TOP_PATH\n$PS1_USER:$PS1_PATH\033[5m#\033[
 # alias ls='ls $LS_OPTIONS'
 # alias ll='ls $LS_OPTIONS -l'
 # alias l='ls $LS_OPTIONS -lA'
-alias ls='ls --color=auto --group-directories-first -lAs'
-
+#
 # Some more alias to avoid making mistakes:
 # alias rm='rm -i'
 # alias cp='cp -i'
 # alias mv='mv -i'
 
+alias ls='ls --color=auto --group-directories-first -lAs'
 alias cdWd="cd /var/www/html"
 alias cdScripts="cd /usr/local/bin"
 alias cdApache="cd /etc/apache2"
