@@ -10,6 +10,9 @@ use Slim\Routing\RouteCollectorProxy;
  * @var App $GLOBALS['app']
  */
 $GLOBALS['app']->get('/', function (Request $request, Response $response, array $args) {
+    var_dump($_SERVER);
+    var_dump($_ENV);
+    die;
     $response->getBody()->write($_SERVER['PROJECT_LABEL']);
     return $response;
 });
