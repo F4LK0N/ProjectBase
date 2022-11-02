@@ -1,3 +1,4 @@
+#TODO: Rename this server to 'App':
 FROM php:8.1-apache
 WORKDIR "/var/www/html"
 
