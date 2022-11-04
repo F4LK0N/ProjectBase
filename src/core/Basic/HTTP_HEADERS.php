@@ -134,13 +134,20 @@ class HTTP_HEADERS
     {
         //Environment Variables (DotEnv File or HTTP Server)
         foreach(self::$defaultBehavior as $key => $value){
-            if(isset($_SERVER["HTTP_HEADERS_".$key])){
-                self::$defaultBehavior[$key] = (bool)$_SERVER["HTTP_HEADERS_".$key];
+            $envKey = "HTTP_HEADERS_$key";
+            if(!isset($_SERVER[$envKey])) {
+                continue;
             }
+            if(is_string($_SERVER[$envKey])){
+                $_SERVER[$envKey] = strtolower($_SERVER[$envKey]);
+                $_SERVER[$envKey] = trim($_SERVER[$envKey]);
+                if($_SERVER[$envKey]==='false'){
+                    self::$defaultBehavior[$key] = false;
+                    continue;
+                }
+            }
+            self::$defaultBehavior[$key] = (bool)$_SERVER["HTTP_HEADERS_".$key];
         }
-        
-        //if(isset($_SERVER['PROJECT_CONTENT_TYPE'])){                  self::$defaultContentType    = $_SERVER['PROJECT_CONTENT_TYPE']; }
-        //if(isset($_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE'])){     self::$defaultContentType    = $_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE']; }
     }
     static private function defaultsLoadFromConstants(): void
     {
