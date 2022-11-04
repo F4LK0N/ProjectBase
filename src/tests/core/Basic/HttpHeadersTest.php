@@ -57,7 +57,6 @@ final class HttpHeadersTest extends TestCase
         self::classTearDown();
     }
     
-    
     /**
      * @throws ReflectionException
      */
@@ -117,7 +116,6 @@ final class HttpHeadersTest extends TestCase
         
     }
     
-    
     public function testTestClass_Setup(): void
     {
         $this->assertTrue(
@@ -152,16 +150,10 @@ final class HttpHeadersTest extends TestCase
         foreach(self::$attribute_defaultBehavior as $testingKey => $testingValue)
         {
             $_SERVER["HTTP_HEADERS_".$testingKey] = false;
-            
-            print"> $testingKey <".'$_SERVER["HTTP_HEADERS_".$testingKey]'."\n";
-            var_dump($_SERVER["HTTP_HEADERS_".$testingKey]);
-            
             self::methodCall("defaultsLoadFromEnvironmentFile");
             foreach(self::$attribute_defaultBehavior as $checkingKey => $value)
             {
                 $classValue = self::$class->getStaticPropertyValue('defaultBehavior')[$checkingKey];
-                
-                print"$checkingKey\n";
                 if($checkingKey===$testingKey){
                     $this->assertFalse($classValue);
                 }
@@ -169,9 +161,9 @@ final class HttpHeadersTest extends TestCase
                     $this->assertTrue($classValue);
                 }
             }
-            print"\n";
+            unset($_SERVER["HTTP_HEADERS_".$testingKey]);
+            self::classReset();
         }
-        
     }
 
     
