@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 namespace Tests\Core\Basic;
 
+define("HTTP_HEADERS_DEFAULT_RUN", false);
 require_once dirname(__DIR__, 3) . "/core/Basic/HTTP_HEADERS.php";
 
 use TypeError;
@@ -131,18 +132,46 @@ final class HttpHeadersTest extends TestCase
      * @depends testTestClass_Setup
      * @throws ReflectionException
      */
-    public function test_defaultsLoadFromEnvironmentFile_Behaviors(): void
+    public function test_defaultsLoadFromEnvironmentFile_Behaviors_Untouched(): void
     {
         self::methodCall("defaultsLoadFromEnvironmentFile");
-        
-        //FOREACH KEY
-        
-            //TEST INVALID VALUE
+        foreach(self::$attribute_defaultBehavior as $key => $value)
+        {
+            $this->assertTrue(
+                self::$class->getStaticPropertyValue('defaultBehavior')[$key]
+            );
+        }
+        self::classReset();
+    }
+    /**
+     * @depends testTestClass_Setup
+     * @throws ReflectionException
+     */
+    public function test_defaultsLoadFromEnvironmentFile_Behaviors(): void
+    {
+        foreach(self::$attribute_defaultBehavior as $testingKey => $testingValue)
+        {
+            $_SERVER["HTTP_HEADERS_".$testingKey] = false;
             
+            print"> $testingKey <".'$_SERVER["HTTP_HEADERS_".$testingKey]'."\n";
+            var_dump($_SERVER["HTTP_HEADERS_".$testingKey]);
+            
+            self::methodCall("defaultsLoadFromEnvironmentFile");
+            foreach(self::$attribute_defaultBehavior as $checkingKey => $value)
+            {
+                $classValue = self::$class->getStaticPropertyValue('defaultBehavior')[$checkingKey];
+                
+                print"$checkingKey\n";
+                if($checkingKey===$testingKey){
+                    $this->assertFalse($classValue);
+                }
+                else{
+                    $this->assertTrue($classValue);
+                }
+            }
+            print"\n";
+        }
         
-        $this->assertTrue(
-            true
-        );
     }
 
     
