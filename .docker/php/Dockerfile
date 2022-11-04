@@ -30,50 +30,6 @@ WORKDIR "/var/www/html"
 #
 #
 #
-#########################################################################################################################
-#### APACHE SERVER ###
-#########################################################################################################################
-#########################################
-#### CONFIGURATION FILES ###
-#########################################
-## ORGINAL STRUCTURE:
-## ------------------
-## /etc/apache2/
-##   apache2.conf
-##   envvars
-##   magic
-##   ports.conf
-##   conf-available/
-##   conf-enabled/
-##   mods-available/
-##   mods-enabled/
-##   sites-available/
-##   sites-enabled/
-## ----------------
-## FINAL STRUCTURE:
-## ----------------
-##TODO:
-## /etc/apache2/
-##   apache2.conf
-##   envvars
-##   confs/
-##   mods/
-#RUN rm /etc/apache2/apache2.conf
-#RUN rm /etc/apache2/ports.conf
-#ADD ./apache/apache2.conf /etc/apache2/apache2.conf
-#
-#RUN rm /etc/apache2/sites-enabled/*
-#ADD ./apache/sites-enabled/main.conf /etc/apache2/sites-enabled/main.conf
-#
-#########################################
-#### LOGS ###
-#########################################
-## /var/log/apache2/
-##   access.log
-##   error.log
-#
-#
-#
 ##########################################################################################################################
 #### PHP ##
 ##########################################################################################################################
