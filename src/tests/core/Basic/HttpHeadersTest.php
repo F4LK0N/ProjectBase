@@ -143,18 +143,19 @@ final class HttpHeadersTest extends TestCase
     }
     /**
      * @depends testTestClass_Setup
+     * @dataProvider behaviorValuesProvider
      * @throws ReflectionException
      */
-    public function test_defaultsLoadFromEnvironmentFile_Behaviors(): void
+    public function test_defaultsLoadFromEnvironmentFile_Behaviors(mixed $value, bool $expected): void
     {
-        foreach(self::$attribute_defaultBehavior as $testingKey => $testingValue)
+        foreach(self::$attribute_defaultBehavior as $testingKey => $notUsed)
         {
-            $_SERVER["HTTP_HEADERS_".$testingKey] = false;
+            $_SERVER["HTTP_HEADERS_".$testingKey] = $value;
             self::methodCall("defaultsLoadFromEnvironmentFile");
-            foreach(self::$attribute_defaultBehavior as $checkingKey => $value)
+            foreach(self::$attribute_defaultBehavior as $checkingKey => $notUsed2)
             {
                 $classValue = self::$class->getStaticPropertyValue('defaultBehavior')[$checkingKey];
-                if($checkingKey===$testingKey){
+                if($checkingKey===$testingKey && $expected===false){
                     $this->assertFalse($classValue);
                 }
                 else{
@@ -164,6 +165,20 @@ final class HttpHeadersTest extends TestCase
             unset($_SERVER["HTTP_HEADERS_".$testingKey]);
             self::classReset();
         }
+    }
+    
+    public function behaviorValuesProvider(): array
+    {
+        return [
+            [false,   false],
+            [0,       false],
+            ['false', false],
+            ['0',     false],
+            [true,    true],
+            [1,       true],
+            ['true',  true],
+            ['1',     true],
+        ];
     }
 
     
