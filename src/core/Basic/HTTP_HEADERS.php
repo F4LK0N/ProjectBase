@@ -92,15 +92,20 @@ use Core\Enumerations\HTTP_HEADER_CONTENT_TYPE;
  */
 class HTTP_HEADERS
 {
-    static private bool $defaultRun            = true;
-    static private bool $defaultRunContentType = true;
-    static private bool $defaultRunCors        = true;
-    static private bool $defaultSendHeaders    = true;
-    static private bool $defaultRunPreflight   = true;
-    static private bool $defaultStopPreflight  = true;
+    //DEFAULTS
+    static private array $defaultBehavior = [
+        //Behavior                 Default
+        'DEFAULT_RUN'              =>true,
+        'DEFAULT_RUN_CONTENT_TYPE' =>true,
+        'DEFAULT_RUN_CORS'         =>true,
+        'DEFAULT_SEND_HEADERS'     =>true,
+        'DEFAULT_RUN_PREFLIGHT'    =>true,
+        'DEFAULT_STOP_PREFLIGHT'   =>true,
+    ];
+    static private string $defaultContentType = "HTML";
     
-    static private string $defaultContentType    = "HTML";
     
+    //CURRENT
     static private array                    $headers     = [];
     static private HTTP_HEADER_CONTENT_TYPE $contentType = HTTP_HEADER_CONTENT_TYPE::UNDEFINED;
     static private bool                     $isPreflight = false;
@@ -128,27 +133,14 @@ class HTTP_HEADERS
     static private function defaultsLoadFromEnvironmentFile(): void
     {
         //Environment Variables (DotEnv File or HTTP Server)
-        if(isset($_SERVER['HTTP_HEADERS_DEFAULT_RUN'])){              self::$defaultRun            = $_SERVER['HTTP_HEADERS_DEFAULT_RUN']; }
-        if(isset($_SERVER['HTTP_HEADERS_DEFAULT_RUN_CONTENT_TYPE'])){ self::$defaultRunContentType = $_SERVER['HTTP_HEADERS_DEFAULT_RUN_CONTENT_TYPE']; }
-        if(isset($_SERVER['HTTP_HEADERS_DEFAULT_RUN_CORS'])){         self::$defaultRunCors        = $_SERVER['HTTP_HEADERS_DEFAULT_RUN_CORS']; }
-        if(isset($_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS'])){     self::$defaultSendHeaders    = $_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS']; }
-        if(isset($_SERVER['HTTP_HEADERS_DEFAULT_RUN_PREFLIGHT'])){    self::$defaultRunPreflight   = $_SERVER['HTTP_HEADERS_DEFAULT_RUN_PREFLIGHT']; }
-        if(isset($_SERVER['HTTP_HEADERS_DEFAULT_STOP_PREFLIGHT'])){   self::$defaultStopPreflight  = $_SERVER['HTTP_HEADERS_DEFAULT_STOP_PREFLIGHT']; }
+        foreach(self::$defaultBehavior as $key => $value){
+            if(isset($_SERVER["HTTP_HEADERS_".$key])){
+                self::$defaultBehavior[$key] = (bool)$_SERVER["HTTP_HEADERS_".$key];
+            }
+        }
         
-        if(isset($_SERVER['PROJECT_CONTENT_TYPE'])){                  self::$defaultContentType    = $_SERVER['PROJECT_CONTENT_TYPE']; }
-        if(isset($_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE'])){     self::$defaultContentType    = $_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE']; }
-
-//        var_dump(self::$defaultRun);           
-//        var_dump(self::$defaultRunContentType);
-//        var_dump(self::$defaultRunCors);       
-//        var_dump(self::$defaultSendHeaders);   
-//        var_dump(self::$defaultRunPreflight);  
-//        var_dump(self::$defaultStopPreflight); 
-//        var_dump(self::$defaultContentType);
-//        die;
-        
-        //Constants (Developer Defined)
-        
+        //if(isset($_SERVER['PROJECT_CONTENT_TYPE'])){                  self::$defaultContentType    = $_SERVER['PROJECT_CONTENT_TYPE']; }
+        //if(isset($_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE'])){     self::$defaultContentType    = $_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE']; }
     }
     static private function defaultsLoadFromConstants(): void
     {
