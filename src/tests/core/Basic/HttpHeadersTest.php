@@ -16,6 +16,8 @@ final class HttpHeadersTest extends TestCase
     //### REFERENCES ###
     static private ?ReflectionClass  $class                                  = null;
     
+    static private array             $attribute_defaultBehavior              = [];
+    
     static private ?ReflectionMethod $method_defaultsLoad                    = null;
     static private ?ReflectionMethod $method_defaultsLoadFromEnvironmentFile = null;
     static private ?ReflectionMethod $method_defaultsLoadFromConstants       = null;
@@ -32,16 +34,6 @@ final class HttpHeadersTest extends TestCase
         return self::$$method->invokeArgs(null, $arguments);
     }
     
-    static private array $HTTP_HEADERS_DEFAULT_BEHAVIORS = [
-        //ExternalKeyName                          ClassKeyName             DefaultValue
-        ['HTTP_HEADERS_DEFAULT_RUN',               'defaultRun',            true],
-        ['HTTP_HEADERS_DEFAULT_RUN_CONTENT_TYPE',  'defaultRunContentType', true],
-        ['HTTP_HEADERS_DEFAULT_RUN_CORS',          'defaultRunCors',        true],
-        ['HTTP_HEADERS_DEFAULT_SEND_HEADERS',      'defaultSendHeaders',    true],
-        ['HTTP_HEADERS_DEFAULT_RUN_PREFLIGHT',     'defaultRunPreflight',   true],
-        ['HTTP_HEADERS_DEFAULT_STOP_PREFLIGHT',    'defaultStopPreflight',  true],
-    ];
-    
     
     
     //### SETUP AND TEAR DOWN ###
@@ -51,56 +43,28 @@ final class HttpHeadersTest extends TestCase
     static public function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
-
-//        self::defaultEnvironmentValuesGet();
-//        self::defaultConstantValuesGet();
         
-        self::classSetUp();
-        //self::classReset();
+        self::classSetup();
+        self::classReset();
+    
+        self::setupEnvironment();
+        self::setupConstants();
     }
     static public function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
-        
-//        self::defaultEnvironmentValuesSet();
-//        self::defaultConstantValuesSet();
-        
         self::classTearDown();
     }
     
-    static private function defaultEnvValuesGetAndClear(): void
-    {
-//        self::$defaultEnvironmentValues['HTTP_HEADERS_DEFAULT_RUN']              = $_SERVER['HTTP_HEADERS_DEFAULT_RUN']              ?? null;
-//        self::$defaultEnvironmentValues['HTTP_HEADERS_DEFAULT_RUN_CONTENT_TYPE'] = $_SERVER['HTTP_HEADERS_DEFAULT_RUN_CONTENT_TYPE'] ?? null;
-//        self::$defaultEnvironmentValues['HTTP_HEADERS_DEFAULT_RUN_CORS']         = $_SERVER['HTTP_HEADERS_DEFAULT_RUN_CORS']         ?? null;
-//        self::$defaultEnvironmentValues['HTTP_HEADERS_DEFAULT_SEND_HEADERS']     = $_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS']     ?? null;
-//        self::$defaultEnvironmentValues['HTTP_HEADERS_DEFAULT_RUN_PREFLIGHT']    = $_SERVER['HTTP_HEADERS_DEFAULT_RUN_PREFLIGHT']    ?? null;
-//        self::$defaultEnvironmentValues['HTTP_HEADERS_DEFAULT_STOP_PREFLIGHT']   = $_SERVER['HTTP_HEADERS_DEFAULT_STOP_PREFLIGHT']   ?? null;
-//        self::$defaultEnvironmentValues['HTTP_HEADERS_DEFAULT_CONTENT_TYPE']     = $_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE']     ?? null;
-//        self::$defaultEnvironmentValues['PROJECT_CONTENT_TYPE']                  = $_SERVER['PROJECT_CONTENT_TYPE']                  ?? null;
-//        self::$defaultEnvironmentValues['PHP_SELF']                              = $_SERVER['PHP_SELF']                              ?? null;
-//        
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']             );
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN_CONTENT_TYPE']);
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN_CORS']        );
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_SEND_HEADERS']    );
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN_PREFLIGHT']   );
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_STOP_PREFLIGHT']  );
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_CONTENT_TYPE']    );
-//        unset($_SERVER['PROJECT_CONTENT_TYPE']                 );
-//        unset($_SERVER['PHP_SELF']                             );
-    }
-    static private function defaultConstValuesGetAndClear(): void
-    {
-        
-    }
     
     /**
      * @throws ReflectionException
      */
-    static private function classSetUp()
+    static private function classSetup()
     {
         self::$class = new ReflectionClass(HTTP_HEADERS::class);
+        
+        self::$attribute_defaultBehavior = self::$class->getStaticPropertyValue("defaultBehavior");
         
         (self::$method_defaultsLoad                    = self::$class->getMethod("defaultsLoad"))->setAccessible(true);
         (self::$method_defaultsLoadFromEnvironmentFile = self::$class->getMethod("defaultsLoadFromEnvironmentFile"))->setAccessible(true);
@@ -112,13 +76,12 @@ final class HttpHeadersTest extends TestCase
     }
     static private function classReset()
     {
-        self::$class->setStaticPropertyValue('defaultRun'            , true);
-        self::$class->setStaticPropertyValue('defaultRunContentType' , true);
-        self::$class->setStaticPropertyValue('defaultRunCors'        , true);
-        self::$class->setStaticPropertyValue('defaultSendHeaders'    , true);
-        self::$class->setStaticPropertyValue('defaultRunPreflight'   , true);
-        self::$class->setStaticPropertyValue('defaultStopPreflight'  , true);
-        
+        $defaultBehavior = [];
+        foreach(self::$attribute_defaultBehavior as $key => $value)
+        {
+            $defaultBehavior[$key] = true;
+        }
+        self::$class->setStaticPropertyValue('defaultBehavior'    , $defaultBehavior);
         self::$class->setStaticPropertyValue('defaultContentType'    , "HTML");
         
         self::$class->setStaticPropertyValue('headers',           []);
@@ -138,6 +101,21 @@ final class HttpHeadersTest extends TestCase
         
         self::$class = null;
     }
+    
+    static private function setupEnvironment(): void
+    {
+        //Clear Behavior EnvVars
+        foreach(self::$attribute_defaultBehavior as $key => $value)
+        {
+            unset($_SERVER["HTTP_HEADERS_".$key]);
+        }
+        unset($_SERVER["HTTP_HEADERS_DEFAULT_CONTENT_TYPE"]);
+    }
+    static private function setupConstants(): void
+    {
+        
+    }
+    
     
     public function testTestClass_Setup(): void
     {
