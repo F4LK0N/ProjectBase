@@ -159,10 +159,9 @@ class HTTP_HEADERS
                 $defaultContentType==="HTML" ||
                 $defaultContentType==="JSON"
             ){
-                self::$defaultContentType = HTTP_HEADER_CONTENT_TYPE::tryFrom($defaultContentType);
+                self::$defaultContentType = $defaultContentType;
             }
         }
-        
     }
     static private function defaultsLoad_fromConstants(): void
     {

@@ -130,7 +130,7 @@ final class HttpHeadersTest extends TestCase
      * @depends testTestClass_Setup
      * @throws ReflectionException
      */
-    public function test_defaultsLoadFromEnvironmentFile_Untouched(): void
+    public function test_defaultsLoad_fromEnvironment_Untouched(): void
     {
         self::methodCall("defaultsLoad_fromEnvironment");
         foreach(self::$attribute_defaultBehavior as $key => $value)
@@ -147,10 +147,10 @@ final class HttpHeadersTest extends TestCase
     }
     /**
      * @depends testTestClass_Setup
-     * @dataProvider behaviorValuesProvider
+     * @dataProvider defaultBehaviorValuesProvider
      * @throws ReflectionException
      */
-    public function test_defaultsLoadFromEnvironmentFile_Behaviors(mixed $value, bool $expected): void
+    public function test_defaultsLoad_fromEnvironment_Behaviors(mixed $value, bool $expected): void
     {
         foreach(self::$attribute_defaultBehavior as $testingKey => $notUsed)
         {
@@ -170,8 +170,7 @@ final class HttpHeadersTest extends TestCase
             self::classReset();
         }
     }
-    
-    public function behaviorValuesProvider(): array
+    public function defaultBehaviorValuesProvider(): array
     {
         return [
             [false,   false],
@@ -182,6 +181,32 @@ final class HttpHeadersTest extends TestCase
             [1,       true],
             ['true',  true],
             ['1',     true],
+        ];
+    }
+    /**
+     * @depends testTestClass_Setup
+     * @dataProvider defaultContentTypeValuesProvider
+     * @throws ReflectionException
+     */
+    public function test_defaultsLoad_fromEnvironment_ContentType(mixed $value, string $expected): void
+    {
+        $_SERVER["HTTP_HEADERS_DEFAULT_CONTENT_TYPE"] = $value;
+        self::methodCall("defaultsLoad_fromEnvironment");
+        $this->assertEquals(
+            $expected,
+            self::$class->getStaticPropertyValue('defaultContentType')
+        );
+        unset($_SERVER["HTTP_HEADERS_DEFAULT_CONTENT_TYPE"]);
+        self::classReset();
+    }
+    public function defaultContentTypeValuesProvider(): array
+    {
+        return [
+            [false,   'HTML'],
+            [0,       'HTML'],
+            ['----',  'HTML'],
+            ['HTML',  'HTML'],
+            ['JSON',  'JSON'],
         ];
     }
 
