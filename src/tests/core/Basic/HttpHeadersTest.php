@@ -233,7 +233,7 @@ final class HttpHeadersTest extends TestCase
     /**
      * @depends testTestClass_Setup
      */
-    public function test_clear(): void
+    public function test_clearHeaders(): void
     {
         $this->assertCount(
             0,
@@ -249,35 +249,13 @@ final class HttpHeadersTest extends TestCase
     
     /**
      * @depends testTestClass_Setup
+     * @dataProvider headersProvider
      */
-    public function testSetInvalidHeader(): void
+    public function test_setHeader(string $value, bool $expected): void
     {
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader("")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader(" ")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader(":")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader(": ")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader(" :")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader(" : ")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader("Invalid Value With No Separator")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader(" : Invalid Value With No Name")
-        );
-        $this->assertFalse(
-            HTTP_HEADERS::setHeader("Invalid Value With No Value: ")
+        $this->assertEquals(
+            $expected,
+            HTTP_HEADERS::setHeader($value)
         );
     }
 //
@@ -426,6 +404,7 @@ final class HttpHeadersTest extends TestCase
 //    }
 //
 //
+
     public function defaultBehaviorValuesProvider(): array
     {
         return [
@@ -454,6 +433,21 @@ final class HttpHeadersTest extends TestCase
         return [
             [HTTP_HEADER_CONTENT_TYPE::HTML],
             [HTTP_HEADER_CONTENT_TYPE::JSON],
+        ];
+    }
+    public function headersProvider(): array
+    {
+        return [
+            ["", false],
+            [" ", false],
+            [":", false],
+            [": ", false],
+            [" :", false],
+            [" : ", false],
+            ["Invalid Value With No Separator", false],
+            [" : Invalid Value With No Name", false],
+            ["Invalid Value With No Value: ", false],
+            ["Name:Value", true],
         ];
     }
 }
