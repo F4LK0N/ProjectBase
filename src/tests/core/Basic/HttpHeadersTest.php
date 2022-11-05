@@ -14,7 +14,9 @@ use Core\Basic\HTTP_HEADERS;
 
 final class HttpHeadersTest extends TestCase
 {
+    //####################################################################################################
     //### REFERENCES ###
+    //####################################################################################################
     static private ?ReflectionClass  $class                                  = null;
     
     static private array             $attribute_defaultBehavior              = [];
@@ -29,7 +31,7 @@ final class HttpHeadersTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    static private function methodCall(string $method, array $arguments=[]): mixed
+    static private function call(string $method, array $arguments=[]): mixed
     {
         $method = "method_".$method;
         return self::$$method->invokeArgs(null, $arguments);
@@ -37,7 +39,9 @@ final class HttpHeadersTest extends TestCase
     
     
     
+    //####################################################################################################
     //### SETUP AND TEAR DOWN ###
+    //####################################################################################################
     /**
      * @throws ReflectionException
      */
@@ -45,22 +49,21 @@ final class HttpHeadersTest extends TestCase
     {
         parent::setUpBeforeClass();
         
-        self::classSetup();
+        self::classInit();
         self::classReset();
     
-        self::setupEnvironment();
-        self::setupConstants();
+        self::environmentReset();
     }
     static public function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
-        self::classTearDown();
+        self::classDestroy();
     }
     
     /**
      * @throws ReflectionException
      */
-    static private function classSetup()
+    static private function classInit()
     {
         self::$class = new ReflectionClass(HTTP_HEADERS::class);
         
@@ -89,7 +92,7 @@ final class HttpHeadersTest extends TestCase
         self::$class->setStaticPropertyValue('isPreflight', false);
         self::$class->setStaticPropertyValue('isFistRun',   true);
     }
-    static private function classTearDown(): void 
+    static private function classDestroy(): void 
     {
         self::$method_contentTypeHeaderValue = null;
         
@@ -102,19 +105,22 @@ final class HttpHeadersTest extends TestCase
         self::$class = null;
     }
     
-    static private function setupEnvironment(): void
+    static private function environmentReset(): void
     {
-        //Clear Behavior EnvVars
         foreach(self::$attribute_defaultBehavior as $key => $value)
         {
             unset($_SERVER["HTTP_HEADERS_".$key]);
         }
         unset($_SERVER["HTTP_HEADERS_DEFAULT_CONTENT_TYPE"]);
     }
-    static private function setupConstants(): void
+    
+    protected function setUp(): void
     {
-        
+        parent::setUp();
+        self::classReset();
+        self::environmentReset();
     }
+    
     
     public function testTestClass_Setup(): void
     {
@@ -125,14 +131,18 @@ final class HttpHeadersTest extends TestCase
     
     
     
+    //####################################################################################################
     //### TESTS ###
+    //####################################################################################################
+    
+    //### DEFAULTS ###
     /**
      * @depends testTestClass_Setup
      * @throws ReflectionException
      */
     public function test_defaultsLoad_fromEnvironment_Untouched(): void
     {
-        self::methodCall("defaultsLoad_fromEnvironment");
+        self::call("defaultsLoad_fromEnvironment");
         foreach(self::$attribute_defaultBehavior as $key => $value)
         {
             $this->assertTrue(
@@ -143,7 +153,6 @@ final class HttpHeadersTest extends TestCase
             'HTML',
             self::$class->getStaticPropertyValue('defaultContentType')
         );
-        self::classReset();
     }
     /**
      * @depends testTestClass_Setup
@@ -155,7 +164,7 @@ final class HttpHeadersTest extends TestCase
         foreach(self::$attribute_defaultBehavior as $testingKey => $notUsed)
         {
             $_SERVER["HTTP_HEADERS_".$testingKey] = $value;
-            self::methodCall("defaultsLoad_fromEnvironment");
+            self::call("defaultsLoad_fromEnvironment");
             foreach(self::$attribute_defaultBehavior as $checkingKey => $notUsed2)
             {
                 $classValue = self::$class->getStaticPropertyValue('defaultBehavior')[$checkingKey];
@@ -191,13 +200,11 @@ final class HttpHeadersTest extends TestCase
     public function test_defaultsLoad_fromEnvironment_ContentType(mixed $value, string $expected): void
     {
         $_SERVER["HTTP_HEADERS_DEFAULT_CONTENT_TYPE"] = $value;
-        self::methodCall("defaultsLoad_fromEnvironment");
+        self::call("defaultsLoad_fromEnvironment");
         $this->assertEquals(
             $expected,
             self::$class->getStaticPropertyValue('defaultContentType')
         );
-        unset($_SERVER["HTTP_HEADERS_DEFAULT_CONTENT_TYPE"]);
-        self::classReset();
     }
     public function defaultContentTypeValuesProvider(): array
     {
@@ -209,50 +216,47 @@ final class HttpHeadersTest extends TestCase
             ['JSON',  'JSON'],
         ];
     }
-
     
+    
+    
+    //### CAN RUN ###
+    /**
+     * @depends testTestClass_Setup
+     * @throws ReflectionException
+     */
+    public function test_canRun_Untouched(): void
+    {
+        $this->assertTrue(
+            self::call("canRun")
+        );
+    }
+    /**
+     * @depends testTestClass_Setup
+     * @throws ReflectionException
+     */
+    public function test_canRun(): void
+    {
+        self::$class->setStaticPropertyValue('isFistRun', false);
+        $this->assertFalse(
+            self::call("canRun")
+        );
+        self::$class->setStaticPropertyValue('isFistRun', true);
+        $this->assertTrue(
+            self::call("canRun")
+        );
+    
+        $_SERVER['HTTP_HEADERS_DEFAULT_RUN'] = false;
+        self::call("defaultsLoad_fromEnvironment");
+        $this->assertFalse(
+            self::call("canRun")
+        );
+    }
      
     
     
     
     
     
-//    /**
-//     * @throws ReflectionException
-//     */
-//    public function testCanRun(): void
-//    {
-//        $method = self::$reflectionClass->getMethod("canRun");
-//        $method->setAccessible(true);
-//        
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']);
-//        unset($_SERVER['PHP_SELF']);
-//        $this->assertTrue(
-//            $method->invokeArgs(null, [])
-//        );
-//    
-//        $_SERVER['HTTP_HEADERS_DEFAULT_RUN']=true;
-//        $this->assertTrue(
-//            $method->invokeArgs(null, [])
-//        );
-//    
-//        $_SERVER['HTTP_HEADERS_DEFAULT_RUN']=false;
-//        $this->assertFalse(
-//            $method->invokeArgs(null, [])
-//        );
-//        unset($_SERVER['HTTP_HEADERS_DEFAULT_RUN']);
-//    
-//        $_SERVER['PHP_SELF']=true;
-//        $this->assertTrue(
-//            $method->invokeArgs(null, [])
-//        );
-//    
-//        $_SERVER['PHP_SELF']="./vendor/bin/phpunit";
-//        $this->assertFalse(
-//            $method->invokeArgs(null, [])
-//        );
-//        unset($_SERVER['PHP_SELF']);
-//    }
 //
 //
 //
