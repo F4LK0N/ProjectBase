@@ -20,8 +20,8 @@ final class HttpHeadersTest extends TestCase
     static private array             $attribute_defaultBehavior              = [];
     
     static private ?ReflectionMethod $method_defaultsLoad                    = null;
-    static private ?ReflectionMethod $method_defaultsLoadFromEnvironmentFile = null;
-    static private ?ReflectionMethod $method_defaultsLoadFromConstants       = null;
+    static private ?ReflectionMethod $method_defaultsLoad_fromEnvironment    = null;
+    static private ?ReflectionMethod $method_defaultsLoad_fromConstants      = null;
     
     static private ?ReflectionMethod $method_canRun                          = null;
     static private ?ReflectionMethod $method_contentTypeHeaderValue          = null;
@@ -66,13 +66,13 @@ final class HttpHeadersTest extends TestCase
         
         self::$attribute_defaultBehavior = self::$class->getStaticPropertyValue("defaultBehavior");
         
-        (self::$method_defaultsLoad                    = self::$class->getMethod("defaultsLoad"))->setAccessible(true);
-        (self::$method_defaultsLoadFromEnvironmentFile = self::$class->getMethod("defaultsLoadFromEnvironmentFile"))->setAccessible(true);
-        (self::$method_defaultsLoadFromConstants       = self::$class->getMethod("defaultsLoadFromConstants"))->setAccessible(true);
+        (self::$method_defaultsLoad                 = self::$class->getMethod("defaultsLoad"))->setAccessible(true);
+        (self::$method_defaultsLoad_fromEnvironment = self::$class->getMethod("defaultsLoad_fromEnvironment"))->setAccessible(true);
+        (self::$method_defaultsLoad_fromConstants   = self::$class->getMethod("defaultsLoad_fromConstants"))->setAccessible(true);
     
-        (self::$method_canRun                          = self::$class->getMethod("canRun"))->setAccessible(true);
+        (self::$method_canRun                       = self::$class->getMethod("canRun"))->setAccessible(true);
     
-        (self::$method_contentTypeHeaderValue          = self::$class->getMethod("contentTypeHeaderValue"))->setAccessible(true);
+        (self::$method_contentTypeHeaderValue       = self::$class->getMethod("contentTypeHeaderValue"))->setAccessible(true);
     }
     static private function classReset()
     {
@@ -81,10 +81,10 @@ final class HttpHeadersTest extends TestCase
         {
             $defaultBehavior[$key] = true;
         }
-        self::$class->setStaticPropertyValue('defaultBehavior'    , $defaultBehavior);
-        self::$class->setStaticPropertyValue('defaultContentType'    , "HTML");
+        self::$class->setStaticPropertyValue('defaultBehavior',    $defaultBehavior);
+        self::$class->setStaticPropertyValue('defaultContentType', "HTML");
         
-        self::$class->setStaticPropertyValue('headers',           []);
+        self::$class->setStaticPropertyValue('headers',     []);
         self::$class->setStaticPropertyValue('contentType', HTTP_HEADER_CONTENT_TYPE::UNDEFINED);
         self::$class->setStaticPropertyValue('isPreflight', false);
         self::$class->setStaticPropertyValue('isFistRun',   true);
@@ -95,8 +95,8 @@ final class HttpHeadersTest extends TestCase
         
         self::$method_canRun = null;
         
-        self::$method_defaultsLoadFromConstants = null;
-        self::$method_defaultsLoadFromEnvironmentFile = null;
+        self::$method_defaultsLoad_fromConstants = null;
+        self::$method_defaultsLoad_fromEnvironment = null;
         self::$method_defaultsLoad = null;
         
         self::$class = null;
@@ -130,15 +130,19 @@ final class HttpHeadersTest extends TestCase
      * @depends testTestClass_Setup
      * @throws ReflectionException
      */
-    public function test_defaultsLoadFromEnvironmentFile_Behaviors_Untouched(): void
+    public function test_defaultsLoadFromEnvironmentFile_Untouched(): void
     {
-        self::methodCall("defaultsLoadFromEnvironmentFile");
+        self::methodCall("defaultsLoad_fromEnvironment");
         foreach(self::$attribute_defaultBehavior as $key => $value)
         {
             $this->assertTrue(
                 self::$class->getStaticPropertyValue('defaultBehavior')[$key]
             );
         }
+        $this->assertEquals(
+            'HTML',
+            self::$class->getStaticPropertyValue('defaultContentType')
+        );
         self::classReset();
     }
     /**
@@ -151,7 +155,7 @@ final class HttpHeadersTest extends TestCase
         foreach(self::$attribute_defaultBehavior as $testingKey => $notUsed)
         {
             $_SERVER["HTTP_HEADERS_".$testingKey] = $value;
-            self::methodCall("defaultsLoadFromEnvironmentFile");
+            self::methodCall("defaultsLoad_fromEnvironment");
             foreach(self::$attribute_defaultBehavior as $checkingKey => $notUsed2)
             {
                 $classValue = self::$class->getStaticPropertyValue('defaultBehavior')[$checkingKey];
