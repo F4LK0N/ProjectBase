@@ -54,6 +54,12 @@ final class HttpHeadersTest extends TestCase
     
         self::environmentReset();
     }
+    protected function setUp(): void
+    {
+        parent::setUp();
+        self::classReset();
+        self::environmentReset();
+    }
     static public function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
@@ -114,14 +120,6 @@ final class HttpHeadersTest extends TestCase
         unset($_SERVER["HTTP_HEADERS_DEFAULT_CONTENT_TYPE"]);
     }
     
-    protected function setUp(): void
-    {
-        parent::setUp();
-        self::classReset();
-        self::environmentReset();
-    }
-    
-    
     public function testTestClass_Setup(): void
     {
         $this->assertTrue(
@@ -179,19 +177,6 @@ final class HttpHeadersTest extends TestCase
             self::classReset();
         }
     }
-    public function defaultBehaviorValuesProvider(): array
-    {
-        return [
-            [false,   false],
-            [0,       false],
-            ['false', false],
-            ['0',     false],
-            [true,    true],
-            [1,       true],
-            ['true',  true],
-            ['1',     true],
-        ];
-    }
     /**
      * @depends testTestClass_Setup
      * @dataProvider defaultContentTypeValuesProvider
@@ -205,16 +190,6 @@ final class HttpHeadersTest extends TestCase
             $expected,
             self::$class->getStaticPropertyValue('defaultContentType')
         );
-    }
-    public function defaultContentTypeValuesProvider(): array
-    {
-        return [
-            [false,   'HTML'],
-            [0,       'HTML'],
-            ['----',  'HTML'],
-            ['HTML',  'HTML'],
-            ['JSON',  'JSON'],
-        ];
     }
     
     
@@ -251,45 +226,60 @@ final class HttpHeadersTest extends TestCase
             self::call("canRun")
         );
     }
-     
     
     
     
+    //### HEADERS ###
+    /**
+     * @depends testTestClass_Setup
+     */
+    public function test_clear(): void
+    {
+        $this->assertCount(
+            0,
+            self::$class->getStaticPropertyValue('headers')
+        );
+        self::$class->setStaticPropertyValue('headers', [1,2,3]);
+        HTTP_HEADERS::clear();
+        $this->assertCount(
+            0,
+            self::$class->getStaticPropertyValue('headers')
+        );
+    }
     
-    
-//
-//
-//
-//    public function testSetInvalidHeader(): void
-//    {
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader("")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader(" ")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader(":")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader(": ")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader(" :")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader(" : ")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader("Invalid Value With No Separator")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader(" : Invalid Value With No Name")
-//        );
-//        $this->assertFalse(
-//            HTTP_HEADERS::setHeader("Invalid Value With No Value: ")
-//        );
-//    }
+    /**
+     * @depends testTestClass_Setup
+     */
+    public function testSetInvalidHeader(): void
+    {
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader("")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader(" ")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader(":")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader(": ")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader(" :")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader(" : ")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader("Invalid Value With No Separator")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader(" : Invalid Value With No Name")
+        );
+        $this->assertFalse(
+            HTTP_HEADERS::setHeader("Invalid Value With No Value: ")
+        );
+    }
 //
 //    /**
 //     * @depends testSetInvalidHeader
@@ -436,7 +426,29 @@ final class HttpHeadersTest extends TestCase
 //    }
 //
 //
-    
+    public function defaultBehaviorValuesProvider(): array
+    {
+        return [
+            [false,   false],
+            [0,       false],
+            ['false', false],
+            ['0',     false],
+            [true,    true],
+            [1,       true],
+            ['true',  true],
+            ['1',     true],
+        ];
+    }
+    public function defaultContentTypeValuesProvider(): array
+    {
+        return [
+            [false,   'HTML'],
+            [0,       'HTML'],
+            ['----',  'HTML'],
+            ['HTML',  'HTML'],
+            ['JSON',  'JSON'],
+        ];
+    }
     public function contentTypeProvider(): array
     {
         return [

@@ -103,7 +103,6 @@ class HTTP_HEADERS
     ];
     static private string $defaultContentType = "HTML";
     
-    
     //CURRENT
     static private array                    $headers     = [];
     static private HTTP_HEADER_CONTENT_TYPE $contentType = HTTP_HEADER_CONTENT_TYPE::UNDEFINED;
@@ -112,6 +111,7 @@ class HTTP_HEADERS
     
     
     
+    //RUN
     static public function run(): void
     {
         self::defaultsLoad();
@@ -123,7 +123,17 @@ class HTTP_HEADERS
         }
         self::$isFistRun=false;
     }
+    static private function canRun(): bool
+    {
+        if(
+            (!self::$isFistRun) || (self::$defaultBehavior['DEFAULT_RUN']===false)
+        ){
+            return false;
+        }
+        return true;
+    }
     
+    //DEFAULTS
     static private function defaultsLoad(): void
     {
         self::defaultsLoad_fromEnvironment();
@@ -168,18 +178,50 @@ class HTTP_HEADERS
         
     }
     
-    
-    static private function canRun(): bool
+    //HEADERS
+    static public function clear(): void
     {
-        if(
-            (!self::$isFistRun) || (self::$defaultBehavior['DEFAULT_RUN']===false)
-        ){
+        self::$headers = [];
+    }
+    static public function setHeader(string $value): bool
+    {
+        $value = trim($value);
+        $separatorPosition = strpos($value, ":");
+        
+        if($separatorPosition===false || $separatorPosition<1 || $separatorPosition===(strlen($value)-1)){
             return false;
         }
+        
+        $headerParts = explode(":", $value, 2);
+        $headerParts[0] = trim($headerParts[0]);
+        $headerParts[1] = trim($headerParts[1]);
+        
+        if(strlen($headerParts[0])===0 || strlen($headerParts[1])===0){
+            return false;
+        }
+        
+        self::$headers[$headerParts[0]] = $headerParts[1];
         return true;
     }
+    static public function getHeader(string $name): ?string
+    {
+        if(isset(self::$headers[$name])){
+            return self::$headers[$name];
+        }
+        return null;
+    }
+    static public function getHeaders(): array
+    {
+        return self::$headers;
+    }
+    static public function sendHeaders(): void
+    {
+        foreach(self::$headers as $name => $value){
+            header("$name: $value");
+        }
+    }
     
-    
+    //CONTENT TYPE
     static public function contentTypeRun(): void
     {
         //self::setHeader(self::createContentTypeHeader());
@@ -231,8 +273,8 @@ class HTTP_HEADERS
 
         return $header;
     }
-
     
+    //CORS
     static public function corsRun(): void
     {
         self::setHeader('Access-Control-Allow-Origin: *');
@@ -242,7 +284,7 @@ class HTTP_HEADERS
         self::setHeader("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
     }
 
-    
+    //PREFLIGHT
     static public function preflightRun(?bool $blockRequisition=null): void
     {
         //OPTIONS (Pre-flight Requests)
@@ -253,49 +295,5 @@ class HTTP_HEADERS
             exit(0);
         }
     }
-
-    
-    static public function clearHeaders(): void
-    {
-        self::$headers = [];
-    }
-    static public function setHeader(string $value): bool
-    {
-        $value = trim($value);
-        $separatorPosition = strpos($value, ":");
-
-        if($separatorPosition===false || $separatorPosition<1 || $separatorPosition===(strlen($value)-1)){
-            return false;
-        }
-
-        $headerParts = explode(":", $value, 2);
-        $headerParts[0] = trim($headerParts[0]);
-        $headerParts[1] = trim($headerParts[1]);
-
-        if(strlen($headerParts[0])===0 || strlen($headerParts[1])===0){
-            return false;
-        }
-
-        self::$headers[$headerParts[0]] = $headerParts[1];
-        return true;
-    }
-    static public function getHeader(string $name): ?string
-    {
-        if(isset(self::$headers[$name])){
-            return self::$headers[$name];
-        }
-        return null;
-    }
-    static public function getHeaders(): array
-    {
-        return self::$headers;
-    }
-    static public function sendHeaders(): void
-    {
-        foreach(self::$headers as $name => $value){
-            header("$name: $value");
-        }
-    }
-
 }
 HTTP_HEADERS::run();
