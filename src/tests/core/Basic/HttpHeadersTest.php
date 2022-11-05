@@ -251,56 +251,55 @@ final class HttpHeadersTest extends TestCase
      * @depends testTestClass_Setup
      * @dataProvider headersProvider
      */
-    public function test_setHeader(string $value, bool $expected): void
+    public function test_setHeaders(string $value, bool $expected): void
     {
         $this->assertEquals(
             $expected,
-            HTTP_HEADERS::setHeader($value)
+            HTTP_HEADERS::set($value)
         );
     }
-//
-//    /**
-//     * @depends testSetInvalidHeader
-//     */
-//    public function testSetGetHeader(): void
-//    {
-//        $this->assertNull(
-//            HTTP_HEADERS::getHeader("Header-Name")
-//        );
-//
-//        HTTP_HEADERS::setHeader("Header-Name:Value Test");
-//        $this->assertEquals(
-//            "Value Test",
-//            HTTP_HEADERS::getHeader("Header-Name")
-//        );
-//
-//        HTTP_HEADERS::setHeader("  Header-Name  :  Value Test 2  ");
-//        $this->assertEquals(
-//            "Value Test 2",
-//            HTTP_HEADERS::getHeader("Header-Name")
-//        );
-//
-//        $headers = HTTP_HEADERS::getHeaders();
-//        $this->assertFalse(isset($headers['Header-Name-Not-Set']));
-//        $this->assertTrue(isset($headers['Header-Name']));
-//        $this->assertEquals(
-//            "Value Test 2",
-//            $headers['Header-Name']
-//        );
-//
-//        $headers = HTTP_HEADERS::getHeaders();
-//        $this->assertCount(
-//            1,
-//            $headers
-//        );
-//
-//        HTTP_HEADERS::clearHeaders();
-//        $headers = HTTP_HEADERS::getHeaders();
-//        $this->assertCount(
-//            0,
-//            $headers
-//        );
-//    }
+    /**
+     * @depends test_setHeaders
+     */
+    public function test_setGetHeaders(): void
+    {
+        $this->assertNull(
+            HTTP_HEADERS::get("Header-Name")
+        );
+
+        HTTP_HEADERS::set("Header-Name:Value Test");
+        $this->assertEquals(
+            "Value Test",
+            HTTP_HEADERS::get("Header-Name")
+        );
+
+        HTTP_HEADERS::set("  Header-Name  :  Value Test 2  ");
+        $this->assertEquals(
+            "Value Test 2",
+            HTTP_HEADERS::get("Header-Name")
+        );
+
+        $headers = HTTP_HEADERS::getAll();
+        $this->assertFalse(isset($headers['Header-Name-Not-Set']));
+        $this->assertTrue(isset($headers['Header-Name']));
+        $this->assertEquals(
+            "Value Test 2",
+            $headers['Header-Name']
+        );
+
+        $headers = HTTP_HEADERS::getAll();
+        $this->assertCount(
+            1,
+            $headers
+        );
+
+        HTTP_HEADERS::clear();
+        $headers = HTTP_HEADERS::getAll();
+        $this->assertCount(
+            0,
+            $headers
+        );
+    }
 //
 //    /**
 //     * @depends testSetGetHeader

@@ -183,7 +183,7 @@ class HTTP_HEADERS
     {
         self::$headers = [];
     }
-    static public function setHeader(string $value): bool
+    static public function set(string $value): bool
     {
         $value = trim($value);
         $separatorPosition = strpos($value, ":");
@@ -203,14 +203,14 @@ class HTTP_HEADERS
         self::$headers[$headerParts[0]] = $headerParts[1];
         return true;
     }
-    static public function getHeader(string $name): ?string
+    static public function get(string $name): ?string
     {
         if(isset(self::$headers[$name])){
             return self::$headers[$name];
         }
         return null;
     }
-    static public function getHeaders(): array
+    static public function getAll(): array
     {
         return self::$headers;
     }
@@ -256,7 +256,7 @@ class HTTP_HEADERS
             self::$contentType = HTTP_HEADER_CONTENT_TYPE::HTML;
         }
 
-        self::setHeader(self::contentTypeHeaderValue());
+        self::set(self::contentTypeHeaderValue());
     }
     static public function contentTypeGet(): HTTP_HEADER_CONTENT_TYPE
     {
@@ -277,11 +277,11 @@ class HTTP_HEADERS
     //CORS
     static public function corsRun(): void
     {
-        self::setHeader('Access-Control-Allow-Origin: *');
-        self::setHeader('Access-Control-Allow-Credentials: true');
-        self::setHeader('Access-Control-Max-Age: 86400');
-        self::setHeader("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-        self::setHeader("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
+        self::set('Access-Control-Allow-Origin: *');
+        self::set('Access-Control-Allow-Credentials: true');
+        self::set('Access-Control-Max-Age: 86400');
+        self::set("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+        self::set("Access-Control-Allow-Headers: " . (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']) ? $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'].", " : "")."X-Requested-With, Accept-Encoding");
     }
 
     //PREFLIGHT
