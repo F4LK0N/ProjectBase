@@ -118,7 +118,7 @@ class HTTP_HEADERS
         if(self::canRun()){
             self::contentTypeRun();
             self::corsRun();
-            self::sendHeaders();
+            self::send();
             self::preflightRun();
         }
         self::$isFistRun=false;
@@ -214,7 +214,7 @@ class HTTP_HEADERS
     {
         return self::$headers;
     }
-    static public function sendHeaders(): void
+    static public function send(): void
     {
         foreach(self::$headers as $name => $value){
             header("$name: $value");

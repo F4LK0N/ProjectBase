@@ -246,7 +246,6 @@ final class HttpHeadersTest extends TestCase
             self::$class->getStaticPropertyValue('headers')
         );
     }
-    
     /**
      * @depends testTestClass_Setup
      * @dataProvider headersProvider
@@ -300,18 +299,21 @@ final class HttpHeadersTest extends TestCase
             $headers
         );
     }
-//
-//    /**
-//     * @depends testSetGetHeader
-//     */
-//    public function testContentTypeNotSet(): void
-//    {
-//        $this->assertEquals(
-//            HTTP_HEADER_CONTENT_TYPE::UNDEFINED,
-//            HTTP_HEADERS::contentTypeGet()
-//        );
-//    }
-//
+    
+    
+    
+    //CONTENT TYPE
+    /**
+     * @depends testSetGetHeaders
+     */
+    public function test_contentType_Untouched(): void
+    {
+        $this->assertEquals(
+            HTTP_HEADER_CONTENT_TYPE::UNDEFINED,
+            HTTP_HEADERS::contentTypeGet()
+        );
+    }
+
 //    /**
 //     * @depends testContentTypeNotSet
 //     */
