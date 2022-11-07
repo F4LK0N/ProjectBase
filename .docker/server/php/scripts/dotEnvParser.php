@@ -31,6 +31,24 @@ if(!is_file($pathParsed) && is_file($pathSource)){
                     $name = trim($lineParsed[0]);
                     $value = trim($lineParsed[1]);
                     if(strlen($name) && strlen($value)){
+                        if($name==="MYSQL_APP_USER"){
+                            $name="MYSQL_USER";
+                        }elseif($name==="MYSQL_APP_PASS"){
+                            $name="MYSQL_PASS";
+                        }elseif(
+                            (str_starts_with($name, "MYSQL_") &&
+                                (
+                                    $name!=="MYSQL_HOST" &&
+                                    $name!=="MYSQL_PORT" &&
+                                    !str_starts_with($name, "MYSQL_DATABASE")
+                                )
+                            ) ||
+                            str_starts_with($name, "PMA_") ||
+                            str_starts_with($name, "COMPOSE_") ||
+                            str_starts_with($name, "DOCKER_")
+                        ){
+                            continue;
+                        }
                         $value = explode("}", $value);
                         $valueParsed = [];
                         foreach ($value as &$valuePart){
@@ -44,6 +62,7 @@ if(!is_file($pathParsed) && is_file($pathSource)){
                         }
                         $valueParsed=implode(".", $valueParsed);
                         $contentParsed.='$_ENV[\''.$name.'\']='.$valueParsed.";\n";
+                        
                     }
                 }
             }
