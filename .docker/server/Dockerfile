@@ -29,6 +29,12 @@ ADD ./os/root/.bashrc /root/.bashrc
 ADD ./os/scripts/* /usr/local/bin/
 RUN chmod 775 /usr/local/bin/cmd-entrypoint
 
+########################################
+### CACHE ###
+########################################
+RUN mkdir -p /var/cache
+RUN chmod 777 /var/cache
+
 
 
 ########################################################################################################################
@@ -78,8 +84,23 @@ ADD ./apache/sites-enabled/main.conf /etc/apache2/sites-enabled/main.conf
 #########################################################################################################################
 ### PHP ##
 #########################################################################################################################
+#########################################
+### CONF ###
+#########################################
 #RUN rm /usr/local/etc/php/php.ini
 ADD ./php/php.ini /usr/local/etc/php/php.ini
+
+#########################################
+### CACHE ###
+#########################################
+RUN mkdir -p /var/cache/php
+RUN chmod 777 /var/cache/php
+
+#########################################
+### SCRIPTS ###
+#########################################
+RUN mkdir "/usr/local/etc/php/scripts"
+ADD php/scripts/dotEnvParser.php /usr/local/etc/php/scripts/dotEnvParser.php
 
 #########################################
 ### EXTENSIONS ###

@@ -4,27 +4,42 @@ services:
     container_name: ${PROJECT_NAME}-server
     image: ${PROJECT_NAME}/server
     build: ./.docker/server
+    env_file:
+      - ./.env
     environment:
-      # Verify the .env file.
+      # DotEnv check.
       - PROJECT_NAME=${PROJECT_NAME:?!!! ERROR !!! .env file not found at the root directory!}
       # Environment variables.
       # Every variable defined here must also be defined in:
-      # /.docker/server/apache/sites-enabled/main.conf
-      - PROJECT_NAME
-      - PROJECT_LABEL
-      - SERVER_LOCATION
-      - SERVER_PROVIDER
-      - SERVER_ENVIRONMENT
-      - MYSQL_HOST
-      - MYSQL_PORT
-      - MYSQL_USER=${MYSQL_APP_USER}
-      - MYSQL_PASS=${MYSQL_APP_PASS}
-      - MYSQL_DATABASE
-      - MYSQL_DATABASE_TDD
-      - MYSQL_DATABASE_STRESS
+      # ./.docker/server/apache/sites-enabled/main.conf
+#      - PROJECT_NAME
+#      - PROJECT_LABEL
+#      - SERVER_LOCATION
+#      - SERVER_PROVIDER
+#      - SERVER_ENVIRONMENT
+#      - MYSQL_HOST
+#      - MYSQL_PORT
+#      - MYSQL_USER=${MYSQL_APP_USER}
+#      - MYSQL_PASS=${MYSQL_APP_PASS}
+#      - MYSQL_DATABASE
+#      - MYSQL_DATABASE_TDD
+#      - MYSQL_DATABASE_STRESS
+#      # Empty variables with sensitive content
+#      - MYSQL_ROOT_PASS=""
+#      - MYSQL_APP_USER=""
+#      - MYSQL_APP_PASS=""
+#      - MYSQL_VIEW_USER=""
+#      - MYSQL_VIEW_PASS=""
+#      - PMA_USER=""
+#      - PMA_PASS=""
+#      - COMPOSE_PROJECT_NAME=""
     volumes:
       # Working Directory
       - ./src/:/var/www/html/
+      # DotEnv File
+      - ./.env:/var/www/html/.env
+      # Cache
+      - ./data/cache/php:/var/cache/php
       # Logs
       #TODO: Map Docker host logs.
       #https://www.google.com/search?client=firefox-b-d&q=docker+log+location
@@ -37,23 +52,23 @@ services:
       - "80:80"
       - "443:443"
 
-#  mysql:
-#    container_name: ${PROJECT_NAME}-mysql
-#    image: mysql:8
-#    command: --default-authentication-plugin=mysql_native_password
-#    restart: always
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-#      - MYSQL_USER=$MYSQL_USER
-#      - MYSQL_PASSWORD=$MYSQL_PASSWORD
-#    networks:
-#      - backend
-#    ports:
-#      - "3306:3306"
-#    volumes:
-#      # Data
-#      - ./data/mysql:/var/lib/mysql
-#
+  mysql:
+    container_name: ${PROJECT_NAME}-mysql
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=MYSQL_ROOT_PASS
+      - MYSQL_USER=MYSQL_APP_USER
+      - MYSQL_PASS=MYSQL_APP_PASS
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+    volumes:
+      # Data
+      - ./data/mysql:/var/lib/mysql
+
 #  phpmyadmin:
 #    container_name: ${PROJECT_NAME}-phpmyadmin
 #    image: phpmyadmin/phpmyadmin
